@@ -9,6 +9,7 @@
 		<fieldset>
 			<legend>Modify product</legend>
 			<table>
+				<tr><input type="hidden" id="id" name="id" value="${product.id()}"</tr>
 				<tr>
 					<td><label for="name">Name</label></td>
 					<td><input type="text" id="name" name="name"

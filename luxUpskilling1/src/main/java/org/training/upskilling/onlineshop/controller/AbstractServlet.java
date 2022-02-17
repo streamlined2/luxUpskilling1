@@ -2,11 +2,9 @@ package org.training.upskilling.onlineshop.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.training.upskilling.onlineshop.service.ProductService;
-import org.training.upskilling.onlineshop.service.dto.ProductDto;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 import jakarta.servlet.ServletException;
@@ -21,7 +19,7 @@ public abstract class AbstractServlet extends HttpServlet {
 	protected static final String PRODUCTS_ATTRIBUTE = "products";
 	protected static final String CREATE_PRODUCT_FLAG_ATTRIBUTE = "createProduct";
 	protected static final String PRODUCT_ATTRIBUTE = "product";
-	protected static final String ITEM_PARAMETER = "item";
+	protected static final String PRODUCT_ID_PARAMETER = "id";
 	protected static final String PRODUCT_NAME_PARAMETER = "name";
 	protected static final String PRODUCT_PRICE_PARAMETER = "price";
 	protected static final String PRODUCT_CREATION_DATE_PARAMETER = "creationDate";
@@ -85,18 +83,8 @@ public abstract class AbstractServlet extends HttpServlet {
 		setTemplateVariable(PRODUCTS_ATTRIBUTE, productService.getAll());
 	}
 
-	protected ProductDto getProductFromList(HttpServletRequest req) throws ServletException {
-		String itemParameter = getRequestParameter(req, ITEM_PARAMETER,
-				"missing item parameter of product to operate on");
-		List<ProductDto> products = (List<ProductDto>) getTemplateVariable(PRODUCTS_ATTRIBUTE,
-				"missing product list attribute");
-
-		int index = Integer.parseInt(itemParameter);
-		if (index <= 0 || index > products.size())
-			throw new ServletException(
-					String.format("wrong index %d, should be within [1,%d]", index, products.size()));
-
-		return products.get(index - 1);
+	protected Long getProductId(HttpServletRequest req) throws ServletException {
+		return Long.valueOf(getRequestParameter(req, PRODUCT_ID_PARAMETER, "missing entity id parameter"));
 	}
 
 	protected String getRequestParameter(HttpServletRequest req, String paramName, String exceptionMessage)
