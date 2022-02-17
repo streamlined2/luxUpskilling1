@@ -2,11 +2,7 @@ package org.training.upskilling.onlineshop;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.util.Properties;
-
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -15,6 +11,7 @@ import org.training.upskilling.onlineshop.controller.DeleteProductServlet;
 import org.training.upskilling.onlineshop.controller.ListAllProductsServlet;
 import org.training.upskilling.onlineshop.controller.ModifyProductServlet;
 import org.training.upskilling.onlineshop.controller.SaveProductServlet;
+import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.dao.jdbc.ProductJdbcDao;
 import org.training.upskilling.onlineshop.service.DefaultProductService;
 import org.training.upskilling.onlineshop.service.dto.ProductMapper;
@@ -31,27 +28,30 @@ public class Runner {
 
 	public static void main(String[] args) {
 
-		Properties props = new Properties();
-		try (Reader reader = new FileReader(propertiesFile)) {
+		try (PropertyReader reader = new PropertyReader(propertiesFile)) {
 
-			props.load(reader);
-
-			var server = new Server(Integer.parseInt(props.getProperty(SERVER_PORT)));
+			var server = new Server(Integer.parseInt(reader.getProperty(SERVER_PORT)));
 
 			var context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 			context.setContextPath(CONTEXT);
 
-			var viewGenerator = new ViewGenerator();
+			var connectionFactory = new JdbcConnectionFactory(reader.getProperties());
 			var productMapper = new ProductMapper();
-			var productService = new DefaultProductService(new ProductJdbcDao(props, productMapper), productMapper);
+			var productService = new DefaultProductService(new ProductJdbcDao(connectionFactory, productMapper),
+					productMapper);
 
+			var viewGenerator = new ViewGenerator();
 			var listAllProductsHolder = new ServletHolder(new ListAllProductsServlet(productService, viewGenerator));
 			context.addServlet(listAllProductsHolder, "/");
 			context.addServlet(listAllProductsHolder, "/products");
-			context.addServlet(new ServletHolder(new DeleteProductServlet(productService, viewGenerator)), "/products/delete");
-			context.addServlet(new ServletHolder(new CreateProductServlet(productService, viewGenerator)), "/products/add");
-			context.addServlet(new ServletHolder(new ModifyProductServlet(productService, viewGenerator)), "/products/edit");
-			context.addServlet(new ServletHolder(new SaveProductServlet(productService, viewGenerator)), "/saveproduct");
+			context.addServlet(new ServletHolder(new DeleteProductServlet(productService, viewGenerator)),
+					"/products/delete");
+			context.addServlet(new ServletHolder(new CreateProductServlet(productService, viewGenerator)),
+					"/products/add");
+			context.addServlet(new ServletHolder(new ModifyProductServlet(productService, viewGenerator)),
+					"/products/edit");
+			context.addServlet(new ServletHolder(new SaveProductServlet(productService, viewGenerator)),
+					"/saveproduct");
 
 			server.setHandler(context);
 
