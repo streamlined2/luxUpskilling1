@@ -1,6 +1,5 @@
 package org.training.upskilling.onlineshop;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.eclipse.jetty.server.Server;
@@ -13,6 +12,7 @@ import org.training.upskilling.onlineshop.controller.ModifyProductServlet;
 import org.training.upskilling.onlineshop.controller.SaveProductServlet;
 import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.dao.jdbc.ProductJdbcDao;
+import org.training.upskilling.onlineshop.propertiesreader.FilePropertyReader;
 import org.training.upskilling.onlineshop.service.DefaultProductService;
 import org.training.upskilling.onlineshop.service.dto.ProductMapper;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
@@ -24,11 +24,11 @@ public class Runner {
 
 	private static final String CONTEXT = "/onlineshop";
 	private static final String SERVER_PORT = "port";
-	private static final File propertiesFile = new File("application.properties");
+	private static final String PROPERTIES_FILE_NAME = "/application.properties";
 
 	public static void main(String[] args) {
 
-		try (PropertyReader reader = new PropertyReader(propertiesFile)) {
+		try (FilePropertyReader reader = new FilePropertyReader(PROPERTIES_FILE_NAME)) {
 
 			var server = new Server(Integer.parseInt(reader.getProperty(SERVER_PORT)));
 
