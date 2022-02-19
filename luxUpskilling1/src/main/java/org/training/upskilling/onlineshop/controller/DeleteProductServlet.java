@@ -1,7 +1,6 @@
 package org.training.upskilling.onlineshop.controller;
 
 import org.training.upskilling.onlineshop.service.ProductService;
-import org.training.upskilling.onlineshop.service.dto.ProductDto;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 import jakarta.servlet.ServletException;

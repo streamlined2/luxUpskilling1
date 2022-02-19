@@ -26,6 +26,10 @@ public class Runner {
 	private static final String SERVER_PORT = "port";
 	private static final String PROPERTIES_FILE_NAME = "/application.properties";
 
+	private static final String URL = "url";
+	private static final String USER = "user";
+	private static final String PASSWORD = "password";
+
 	public static void main(String[] args) {
 
 		try (FilePropertyReader reader = new FilePropertyReader(PROPERTIES_FILE_NAME)) {
@@ -35,7 +39,8 @@ public class Runner {
 			var context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 			context.setContextPath(CONTEXT);
 
-			var connectionFactory = new JdbcConnectionFactory(reader.getProperties());
+			var connectionFactory = new JdbcConnectionFactory(reader.getProperty(URL), reader.getProperty(USER),
+					reader.getProperty(PASSWORD));
 			var productMapper = new ProductMapper();
 			var productService = new DefaultProductService(new ProductJdbcDao(connectionFactory, productMapper),
 					productMapper);
