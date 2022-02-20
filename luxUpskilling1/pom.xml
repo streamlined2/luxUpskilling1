@@ -13,6 +13,7 @@
 		<jetty.version>11.0.8</jetty.version>
 		<slf4j.version>1.7.36</slf4j.version>
 		<exec.mainClass>org.training.upskilling.onlineshop.Runner</exec.mainClass>
+		<heroku.appName>yet-another-one-product-online</heroku.appName>
 	</properties>
 
 	<dependencies>
@@ -93,6 +94,19 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>3.0.4</version>
+				<configuration>
+					<appName>${heroku.appName}</appName>
+					<jdkVersion>${maven.compiler.source}</jdkVersion>
+					<processTypes>
+						<web>java $JAVA_OPTS -Dport=$PORT -Durl=$JDBC_DATABASE_URL -Duser=$JDBC_DATABASE_USERNAME -Dpassword=$JDBC_DATABASE_PASSWORD -jar target/luxUpskilling1.jar</web>
+					</processTypes>
+				</configuration>
 			</plugin>
 
 		</plugins>
