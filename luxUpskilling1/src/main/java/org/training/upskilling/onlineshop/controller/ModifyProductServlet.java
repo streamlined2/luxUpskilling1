@@ -15,7 +15,7 @@ public class ModifyProductServlet extends AbstractServlet {
 	@Override
 	public void doWork(HttpServletRequest req) throws ServletException {
 		setTemplateVariable(CREATE_PRODUCT_FLAG_ATTRIBUTE, Boolean.FALSE);
-		setTemplateVariable(PRODUCT_ATTRIBUTE, productService.findById(getProductId(req)).orElseThrow());
+		setTemplateVariable(PRODUCT_ATTRIBUTE, productService.findById(getProductIdFromPath(req)).orElseThrow());
 	}
 
 	@Override

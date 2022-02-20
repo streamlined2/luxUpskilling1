@@ -30,8 +30,8 @@ th, td {
 					<td>${product.name()}</td>
 					<td>${product.price()}</td>
 					<td>${product.creationDate()}</td>
-					<td><a href=${context}/products/edit?id=${product.id()}>Edit</a></td>
-					<td><a href=${context}/products/delete?id=${product.id()}>Delete</a></td>
+					<td><a href=${context}/products/edit/${product.id()}>Edit</a></td>
+					<td><a href=${context}/products/delete/${product.id()}>Delete</a></td>
 				</tr>
             </#list>
 		</tbody>

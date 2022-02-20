@@ -83,7 +83,16 @@ public abstract class AbstractServlet extends HttpServlet {
 		setTemplateVariable(PRODUCTS_ATTRIBUTE, productService.getAll());
 	}
 
-	protected Long getProductId(HttpServletRequest req) throws ServletException {
+	protected Long getProductIdFromPath(HttpServletRequest req) throws ServletException {
+		String pathInfo = req.getPathInfo();
+		int pos = pathInfo.lastIndexOf("/");
+		if (pos == -1 || pos == pathInfo.length() - 1) {
+			throw new ServletException("product id not present in path");
+		}
+		return Long.valueOf(pathInfo.substring(pos + 1));
+	}
+
+	protected Long getProductIdFromRequest(HttpServletRequest req) throws ServletException {
 		return Long.valueOf(getRequestParameter(req, PRODUCT_ID_PARAMETER, "missing entity id parameter"));
 	}
 

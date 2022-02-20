@@ -36,7 +36,7 @@ public class SaveProductServlet extends AbstractServlet {
 		if (createFlag.booleanValue()) {
 			productId = 0L;
 		} else {
-			productId = getProductId(req);
+			productId = getProductIdFromRequest(req);
 		}
 		ProductDto product = makeProductFromRequestParameters(req, productId);
 

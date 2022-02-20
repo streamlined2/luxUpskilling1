@@ -19,7 +19,7 @@ public class DeleteProductServlet extends AbstractServlet {
 	}
 
 	private void deleteProduct(HttpServletRequest req) throws ServletException {
-		Long id = getProductId(req);
+		Long id = getProductIdFromPath(req);
 		productService.delete(id);
 	}
 

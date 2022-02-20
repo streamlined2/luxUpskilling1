@@ -49,12 +49,12 @@ public class Runner {
 			var listAllProductsHolder = new ServletHolder(new ListAllProductsServlet(productService, viewGenerator));
 			context.addServlet(listAllProductsHolder, "/");
 			context.addServlet(listAllProductsHolder, "/products");
-			context.addServlet(new ServletHolder(new DeleteProductServlet(productService, viewGenerator)),
-					"/products/delete");
 			context.addServlet(new ServletHolder(new CreateProductServlet(productService, viewGenerator)),
 					"/products/add");
 			context.addServlet(new ServletHolder(new ModifyProductServlet(productService, viewGenerator)),
-					"/products/edit");
+					"/products/edit/*");
+			context.addServlet(new ServletHolder(new DeleteProductServlet(productService, viewGenerator)),
+					"/products/delete/*");
 			context.addServlet(new ServletHolder(new SaveProductServlet(productService, viewGenerator)),
 					"/saveproduct");
 
