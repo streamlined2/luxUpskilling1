@@ -24,7 +24,7 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 	private static final String TABLE_NAME = "product";
 
 	private static final String FETCH_ALL_STATEMENT = String
-			.format("SELECT id, name, price, creation_date FROM %s.%s", SCHEME, TABLE_NAME);
+			.format("SELECT id, name, price, creation_date FROM %s.%s ORDER BY name", SCHEME, TABLE_NAME);
 	private static final String FETCH_ENTITY_STATEMENT = String
 			.format("SELECT id, name, price, creation_date FROM %s.%s WHERE id=?", SCHEME, TABLE_NAME);
 	private static final String INSERT_ENTITY_STATEMENT = String

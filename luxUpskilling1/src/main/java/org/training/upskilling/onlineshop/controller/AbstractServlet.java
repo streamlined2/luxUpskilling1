@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jetty.http.HttpMethod;
 import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
@@ -61,12 +62,31 @@ public abstract class AbstractServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		doGet(req, resp);
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format("HTTP method %s not allowed for servlet mapping %s",
+				HttpMethod.GET.name(), req.getServletPath()));
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format("HTTP method %s not allowed for servlet mapping %s",
+				HttpMethod.POST.name(), req.getServletPath()));
+	}
+
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format("HTTP method %s not allowed for servlet mapping %s",
+				HttpMethod.PUT.name(), req.getServletPath()));
+	}
+
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format("HTTP method %s not allowed for servlet mapping %s",
+				HttpMethod.DELETE.name(), req.getServletPath()));
+	}
+
+	protected void processRequest(HttpServletRequest req, HttpServletResponse resp, HttpMethod httpMethod)
+			throws ServletException, IOException {
 		setTemplateVariable(CONTEXT_PATH_ATTRIBUTE, getServletContext().getContextPath());
 		if (modifying) {
 			doWork(req);
