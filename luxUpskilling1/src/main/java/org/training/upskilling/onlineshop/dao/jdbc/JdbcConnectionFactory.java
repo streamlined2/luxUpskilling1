@@ -1,28 +1,41 @@
 package org.training.upskilling.onlineshop.dao.jdbc;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.training.upskilling.onlineshop.dao.DataAccessException;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RequiredArgsConstructor
 @Slf4j
-public class JdbcConnectionFactory {
+public class JdbcConnectionFactory implements AutoCloseable {
 
-	private final String url;
-	private final String user;
-	private final String password;
+	private final BasicDataSource dataSource;
+
+	public JdbcConnectionFactory(String url, String user, String password, int minIdle, int maxIdle,
+			int maxOpenPreparedStatements) {
+		dataSource = new BasicDataSource();
+		dataSource.setUrl(url);
+		dataSource.setUsername(user);
+		dataSource.setPassword(password);
+		dataSource.setMinIdle(minIdle);
+		dataSource.setMaxIdle(maxIdle);
+		dataSource.setMaxOpenPreparedStatements(maxOpenPreparedStatements);
+	}
 
 	public Connection getConnection() {
 		try {
-			return DriverManager.getConnection(url, user, password);
+			return dataSource.getConnection();
 		} catch (SQLException e) {
-			log.error("can't connect to database");
-			throw new DataAccessException("can't connect to database", e);
+			log.error("can't obtain connection");
+			throw new DataAccessException("can't obtain connection", e);
 		}
+	}
+
+	@Override
+	public void close() throws Exception {
+		dataSource.close();
 	}
 
 }

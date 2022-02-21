@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Objects;
 
-public class FilePropertyReader extends AbstractPropertyReader implements AutoCloseable {
+public class FilePropertyReader extends AbstractPropertyReader {
 	
 	private final Reader reader;
 	

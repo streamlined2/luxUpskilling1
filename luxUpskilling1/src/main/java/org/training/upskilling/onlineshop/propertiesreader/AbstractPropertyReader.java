@@ -3,7 +3,7 @@ package org.training.upskilling.onlineshop.propertiesreader;
 import java.util.Objects;
 import java.util.Properties;
 
-public abstract class AbstractPropertyReader {
+public abstract class AbstractPropertyReader implements AutoCloseable {
 
 	protected final Properties properties;
 
@@ -15,9 +15,16 @@ public abstract class AbstractPropertyReader {
 		return Objects.requireNonNull(properties.getProperty(name),
 				String.format("value for required property %s not found", name));
 	}
+	
+	public int getIntegerProperty(String name) {
+		return Integer.parseInt(getProperty(name));
+	}
 
 	public Properties getProperties() {
 		return new Properties(properties);
+	}
+
+	public void close() throws Exception {
 	}
 
 }

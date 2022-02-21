@@ -22,28 +22,31 @@ public class Runner {
 
 	private static final String CONTEXT = "/onlineshop";
 	private static final String SERVER_PORT = "port";
-
 	private static final String URL = "url";
 	private static final String USER = "user";
 	private static final String PASSWORD = "password";
+	private static final String MIN_IDLE = "minIdle";
+	private static final String MAX_IDLE = "maxIdle";
+	private static final String MAX_OPEN_PREPARED_STATEMENTS = "maxOpenPreparedStatements";
 
 	public static void main(String[] args) {
-		
-		try {
-			var reader = new EnvironmentPropertyReader();
-	
-			var server = new Server(Integer.parseInt(reader.getProperty(SERVER_PORT)));
-	
-			var context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-			context.setContextPath(CONTEXT);
-	
-			var connectionFactory = new JdbcConnectionFactory(reader.getProperty(URL), reader.getProperty(USER),
-					reader.getProperty(PASSWORD));
+
+		try (var propertyReader = new EnvironmentPropertyReader();
+				var connectionFactory = new JdbcConnectionFactory(propertyReader.getProperty(URL),
+						propertyReader.getProperty(USER), propertyReader.getProperty(PASSWORD),
+						propertyReader.getIntegerProperty(MIN_IDLE), propertyReader.getIntegerProperty(MAX_IDLE),
+						propertyReader.getIntegerProperty(MAX_OPEN_PREPARED_STATEMENTS))) {
+
+			var viewGenerator = new ViewGenerator();
 			var productMapper = new ProductMapper();
 			var productService = new DefaultProductService(new ProductJdbcDao(connectionFactory, productMapper),
 					productMapper);
-	
-			var viewGenerator = new ViewGenerator();
+
+			var server = new Server(Integer.parseInt(propertyReader.getProperty(SERVER_PORT)));
+
+			var context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+			context.setContextPath(CONTEXT);
+
 			var listAllProductsHolder = new ServletHolder(new ListAllProductsServlet(productService, viewGenerator));
 			context.addServlet(listAllProductsHolder, "/");
 			context.addServlet(listAllProductsHolder, "/products");
@@ -55,12 +58,12 @@ public class Runner {
 					"/products/delete/*");
 			context.addServlet(new ServletHolder(new SaveProductServlet(productService, viewGenerator)),
 					"/saveproduct");
-	
+
 			server.setHandler(context);
-	
+
 			server.start();
 			server.join();
-	
+
 		} catch (Exception e) {
 			log.error("general type exception");
 			e.printStackTrace();
