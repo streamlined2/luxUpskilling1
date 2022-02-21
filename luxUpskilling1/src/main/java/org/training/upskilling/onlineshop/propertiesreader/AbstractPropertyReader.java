@@ -15,9 +15,17 @@ public abstract class AbstractPropertyReader implements AutoCloseable {
 		return Objects.requireNonNull(properties.getProperty(name),
 				String.format("value for required property %s not found", name));
 	}
-	
+
 	public int getIntegerProperty(String name) {
 		return Integer.parseInt(getProperty(name));
+	}
+
+	public int getIntegerProperty(String name, int defaultValue) {
+		try {
+			return getIntegerProperty(name);
+		} catch (NullPointerException | NumberFormatException e) {
+			return defaultValue;
+		}
 	}
 
 	public Properties getProperties() {

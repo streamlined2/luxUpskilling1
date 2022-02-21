@@ -34,8 +34,8 @@ public class Runner {
 		try (var propertyReader = new EnvironmentPropertyReader();
 				var connectionFactory = new JdbcConnectionFactory(propertyReader.getProperty(URL),
 						propertyReader.getProperty(USER), propertyReader.getProperty(PASSWORD),
-						propertyReader.getIntegerProperty(MIN_IDLE), propertyReader.getIntegerProperty(MAX_IDLE),
-						propertyReader.getIntegerProperty(MAX_OPEN_PREPARED_STATEMENTS))) {
+						propertyReader.getIntegerProperty(MIN_IDLE, 5), propertyReader.getIntegerProperty(MAX_IDLE, 10),
+						propertyReader.getIntegerProperty(MAX_OPEN_PREPARED_STATEMENTS, 100))) {
 
 			var viewGenerator = new ViewGenerator();
 			var productMapper = new ProductMapper();
