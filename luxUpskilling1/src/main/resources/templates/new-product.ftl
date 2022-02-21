@@ -31,7 +31,7 @@
 			<hr>
 			<input type="submit" value="Create" formaction="${context}/saveproduct" formmethod="post" />
 			<input type="reset" value="Reset" />
-			<input type="submit" value="Cancel" formaction="${context}/products" formmethod="post" formnovalidate />
+			<input type="submit" value="Cancel" formaction="${context}/products" formmethod="get" formnovalidate />
 		</fieldset>
 	</form>
 </body>

@@ -95,7 +95,7 @@ public abstract class AbstractServlet extends HttpServlet {
 			resp.setContentType("text/html;charset=UTF-8");
 			resp.setStatus(HttpServletResponse.SC_OK);
 			doWork(req);
-			resp.getWriter().append(viewGenerator.getView(getDestination(), getTemplateVariables()));
+			viewGenerator.writeView(getDestination(), getTemplateVariables(), resp.getWriter());
 		}
 	}
 

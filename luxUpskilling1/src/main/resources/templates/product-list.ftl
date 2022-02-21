@@ -21,7 +21,7 @@ th, td {
 			<tr>
 				<th>Name</th>
 				<th>Price</th>
-				<th>Created</th>
+				<th>Produced</th>
 			</tr>
 		</thead>
 		<tbody>

@@ -1,7 +1,6 @@
 package org.training.upskilling.onlineshop.view;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
@@ -22,11 +21,9 @@ public class ViewGenerator {
 		cfg.setClassForTemplateLoading(getClass(), TEMPLATE_FOLDER);
 	}
 
-	public String getView(String templateFilename, Map<String, Object> parameters) {
+	public void writeView(String templateFilename, Map<String, Object> parameters, Writer destination) {
 		try {
-			Writer stream = new StringWriter();
-			cfg.getTemplate(templateFilename).process(parameters, stream);
-			return stream.toString();
+			cfg.getTemplate(templateFilename).process(parameters, destination);
 		} catch (IOException | TemplateException e) {
 			log.error(e.getMessage());
 			throw new ViewException(e);
