@@ -13,32 +13,32 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DefaultProductService implements ProductService {
 
-	private final Dao<Product, Long> dao;
-	private final ProductMapper mapper;
+	private final Dao<Product, Long> productDao;
+	private final ProductMapper productMapper;
 
 	@Override
 	public void add(ProductDto dto) {
-		dao.add(mapper.toProduct(dto));
+		productDao.add(productMapper.toProduct(dto));
 	}
 
 	@Override
 	public void update(ProductDto dto) {
-		dao.update(mapper.toProduct(dto));
+		productDao.update(productMapper.toProduct(dto));
 	}
 
 	@Override
 	public void delete(Long id) {
-		dao.delete(id);
+		productDao.delete(id);
 	}
 
 	@Override
 	public Optional<ProductDto> findById(Long id) {
-		return dao.findById(id).map(mapper::toDto);
+		return productDao.findById(id).map(productMapper::toDto);
 	}
 
 	@Override
 	public List<ProductDto> getAll() {
-		return dao.getAll().stream().map(mapper::toDto).toList();
+		return productDao.getAll().stream().map(productMapper::toDto).toList();
 	}
 
 }

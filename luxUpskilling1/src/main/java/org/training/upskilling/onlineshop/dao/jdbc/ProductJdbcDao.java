@@ -20,19 +20,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProductJdbcDao implements Dao<Product, Long> {
 
-	private static final String SCHEME = "yaos";
+	private static final String SCHEMA = "yaos";
 	private static final String TABLE_NAME = "product";
 
 	private static final String FETCH_ALL_STATEMENT = String
-			.format("SELECT id, name, price, creation_date FROM %s.%s ORDER BY name", SCHEME, TABLE_NAME);
+			.format("SELECT id, name, price, creation_date FROM %s.%s ORDER BY name", SCHEMA, TABLE_NAME);
 	private static final String FETCH_ENTITY_STATEMENT = String
-			.format("SELECT id, name, price, creation_date FROM %s.%s WHERE id=?", SCHEME, TABLE_NAME);
+			.format("SELECT id, name, price, creation_date FROM %s.%s WHERE id=?", SCHEMA, TABLE_NAME);
 	private static final String INSERT_ENTITY_STATEMENT = String
-			.format("INSERT INTO %s.%s (name, price, creation_date) VALUES (?, ?, ?)", SCHEME, TABLE_NAME);
-	private static final String DELETE_ENTITY_STATEMENT = String.format("DELETE FROM %s.%s WHERE id=?", SCHEME,
+			.format("INSERT INTO %s.%s (name, price, creation_date) VALUES (?, ?, ?)", SCHEMA, TABLE_NAME);
+	private static final String DELETE_ENTITY_STATEMENT = String.format("DELETE FROM %s.%s WHERE id=?", SCHEMA,
 			TABLE_NAME);
 	private static final String UPDATE_ENTITY_STATEMENT = String.format("UPDATE %s.%s SET name=?,price=? WHERE id=?",
-			SCHEME, TABLE_NAME);
+			SCHEMA, TABLE_NAME);
 
 	private final JdbcConnectionFactory connectionFactory;
 	private final ProductMapper mapper;
