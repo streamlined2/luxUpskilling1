@@ -10,7 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ModifyProductServlet extends AbstractServlet {
+public class ModifyProductServlet extends ProductServlet {
 	
 	public ModifyProductServlet(ProductService productService, ViewGenerator viewGenerator) {
 		super(productService, viewGenerator);
@@ -22,13 +22,14 @@ public class ModifyProductServlet extends AbstractServlet {
 	}
 
 	@Override
-	public void doWork(HttpServletRequest req) throws ServletException {
+	public boolean doWork(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		setTemplateVariable(CREATE_PRODUCT_FLAG_ATTRIBUTE, Boolean.FALSE);
 		setTemplateVariable(PRODUCT_ATTRIBUTE, productService.findById(getProductIdFromPath(req)).orElseThrow());
+		return true;
 	}
 
 	@Override
-	public String getDestination() {
+	public String getDestination(HttpServletRequest req, boolean success) {
 		return "modify-product.ftl";
 	}
 

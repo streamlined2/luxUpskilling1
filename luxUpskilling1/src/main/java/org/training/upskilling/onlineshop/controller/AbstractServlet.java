@@ -5,43 +5,91 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jetty.http.HttpMethod;
-import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public abstract class AbstractServlet extends HttpServlet {
 
 	protected static final String CONTEXT_PATH_ATTRIBUTE = "context";
-	protected static final String TEMPLATE_VARIABLES_ATTRIBUTE = "parameters";
-	protected static final String PRODUCTS_ATTRIBUTE = "products";
-	protected static final String CREATE_PRODUCT_FLAG_ATTRIBUTE = "createProduct";
-	protected static final String PRODUCT_ATTRIBUTE = "product";
-	protected static final String PRODUCT_ID_PARAMETER = "id";
-	protected static final String PRODUCT_NAME_PARAMETER = "name";
-	protected static final String PRODUCT_PRICE_PARAMETER = "price";
-	protected static final String PRODUCT_CREATION_DATE_PARAMETER = "creationDate";
+	private static final String TEMPLATE_VARIABLES_ATTRIBUTE = "parameters";
+	private static final String HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING = "HTTP method %s not allowed for servlet mapping %s";
 
-	protected final boolean modifying;
-	protected final ProductService productService;
 	protected final ViewGenerator viewGenerator;
+	protected final boolean makeNewRequest;
 
-	protected AbstractServlet(ProductService productService, ViewGenerator viewGenerator) {
-		this(productService, viewGenerator, false);
+	protected void processRequest(HttpServletRequest req, HttpServletResponse resp, HttpMethod httpMethod)
+			throws ServletException, IOException {
+		setTemplateVariable(CONTEXT_PATH_ATTRIBUTE, getServletContext().getContextPath());
+		boolean success = doWork(req, resp);
+		if (makeNewRequest) {
+			resp.sendRedirect(req.getContextPath() + getDestination(req, success));
+		} else {
+			resp.setContentType("text/html;charset=UTF-8");
+			resp.setStatus(HttpServletResponse.SC_OK);
+			viewGenerator.writeView(getDestination(req, success), getTemplateVariables(), resp.getWriter());
+		}
 	}
 
-	protected AbstractServlet(ProductService productService, ViewGenerator viewGenerator, boolean modifying) {
-		this.productService = productService;
-		this.viewGenerator = viewGenerator;
-		this.modifying = modifying;
+	protected abstract boolean doWork(HttpServletRequest req, HttpServletResponse resp) throws ServletException;
+
+	protected abstract String getDestination(HttpServletRequest req, boolean success) throws ServletException;
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
+				HttpMethod.GET.name(), req.getServletPath()));
 	}
 
-	protected abstract void doWork(HttpServletRequest req) throws ServletException;
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
+				HttpMethod.POST.name(), req.getServletPath()));
+	}
 
-	protected abstract String getDestination();
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
+				HttpMethod.PUT.name(), req.getServletPath()));
+	}
+
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
+				HttpMethod.DELETE.name(), req.getServletPath()));
+	}
+
+	@Override
+	protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
+				HttpMethod.HEAD.name(), req.getServletPath()));
+	}
+
+	@Override
+	protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
+				HttpMethod.OPTIONS.name(), req.getServletPath()));
+	}
+
+	@Override
+	protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
+				HttpMethod.TRACE.name(), req.getServletPath()));
+	}
+
+	protected String getRequestParameter(HttpServletRequest req, String paramName, String exceptionMessage)
+			throws ServletException {
+		String parameter = req.getParameter(paramName);
+		if (parameter == null) {
+			throw new ServletException(exceptionMessage);
+		}
+		return parameter;
+	}
 
 	protected Map<String, Object> getTemplateVariables() {
 		Map<String, Object> attributes = (Map<String, Object>) getServletContext()
@@ -59,70 +107,6 @@ public abstract class AbstractServlet extends HttpServlet {
 
 	protected void setTemplateVariable(String name, Object value) {
 		getTemplateVariables().put(name, value);
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format("HTTP method %s not allowed for servlet mapping %s",
-				HttpMethod.GET.name(), req.getServletPath()));
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format("HTTP method %s not allowed for servlet mapping %s",
-				HttpMethod.POST.name(), req.getServletPath()));
-	}
-
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format("HTTP method %s not allowed for servlet mapping %s",
-				HttpMethod.PUT.name(), req.getServletPath()));
-	}
-
-	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format("HTTP method %s not allowed for servlet mapping %s",
-				HttpMethod.DELETE.name(), req.getServletPath()));
-	}
-
-	protected void processRequest(HttpServletRequest req, HttpServletResponse resp, HttpMethod httpMethod)
-			throws ServletException, IOException {
-		setTemplateVariable(CONTEXT_PATH_ATTRIBUTE, getServletContext().getContextPath());
-		if (modifying) {
-			doWork(req);
-			resp.sendRedirect(req.getContextPath() + getDestination());
-		} else {
-			resp.setContentType("text/html;charset=UTF-8");
-			resp.setStatus(HttpServletResponse.SC_OK);
-			doWork(req);
-			viewGenerator.writeView(getDestination(), getTemplateVariables(), resp.getWriter());
-		}
-	}
-
-	protected void fetchAllProducts() {
-		setTemplateVariable(PRODUCTS_ATTRIBUTE, productService.getAll());
-	}
-
-	protected Long getProductIdFromPath(HttpServletRequest req) throws ServletException {
-		String pathInfo = req.getPathInfo();
-		int pos = pathInfo.lastIndexOf("/");
-		if (pos == -1 || pos == pathInfo.length() - 1) {
-			throw new ServletException("product id not present in path");
-		}
-		return Long.valueOf(pathInfo.substring(pos + 1));
-	}
-
-	protected Long getProductIdFromRequest(HttpServletRequest req) throws ServletException {
-		return Long.valueOf(getRequestParameter(req, PRODUCT_ID_PARAMETER, "missing entity id parameter"));
-	}
-
-	protected String getRequestParameter(HttpServletRequest req, String paramName, String exceptionMessage)
-			throws ServletException {
-		String parameter = req.getParameter(paramName);
-		if (parameter == null) {
-			throw new ServletException(exceptionMessage);
-		}
-		return parameter;
 	}
 
 	protected Object getTemplateVariable(String attrName, String exceptionMessage) throws ServletException {

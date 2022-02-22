@@ -10,7 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class DeleteProductServlet extends AbstractServlet {
+public class DeleteProductServlet extends ProductServlet {
 	
 	public DeleteProductServlet(ProductService productService, ViewGenerator viewGenerator) {
 		super(productService, viewGenerator, true);
@@ -22,9 +22,10 @@ public class DeleteProductServlet extends AbstractServlet {
 	}
 
 	@Override
-	public void doWork(HttpServletRequest req) throws ServletException {
+	public boolean doWork(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		deleteProduct(req);
 		fetchAllProducts();
+		return true;
 	}
 
 	private void deleteProduct(HttpServletRequest req) throws ServletException {
@@ -33,7 +34,7 @@ public class DeleteProductServlet extends AbstractServlet {
 	}
 
 	@Override
-	public String getDestination() {
+	public String getDestination(HttpServletRequest req, boolean success) {
 		return "/products";
 	}
 

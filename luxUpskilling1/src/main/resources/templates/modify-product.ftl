@@ -9,12 +9,12 @@
 		<fieldset>
 			<legend>Modify product</legend>
 			<table>
-				<tr><input type="hidden" id="id" name="id" value="${product.id()}"</tr>
+				<tr><input type="hidden" id="id" name="id" value="${product.id()}" /></tr>
 				<tr>
 					<td><label for="name">Name</label></td>
 					<td><input type="text" id="name" name="name"
 						value="${product.name()}" placeholder="Enter product name" size="60"
-						pattern="(\w|\s){2,100}" title="Name of product" required /></td>
+						pattern="(\w|\s){2,60}" title="Name of product" required /></td>
 				</tr>
 				<tr>
 					<td><label for="price">Price</label></td>

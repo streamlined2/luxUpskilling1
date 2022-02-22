@@ -13,7 +13,7 @@
 					<td><label for="name">Name</label></td>
 					<td><input type="text" id="name" name="name"
 						placeholder="Enter product name" size="60"
-						pattern="(\w|\s){2,100}" title="Name of product" required /></td>
+						pattern="(\w|\s){2,60}" title="Name of product" required /></td>
 				</tr>
 				<tr>
 					<td><label for="price">Price</label></td>

@@ -10,7 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ListAllProductsServlet extends AbstractServlet {
+public class ListAllProductsServlet extends ProductServlet {
 	
 	public ListAllProductsServlet(ProductService productService, ViewGenerator viewGenerator) {
 		super(productService, viewGenerator);
@@ -22,12 +22,13 @@ public class ListAllProductsServlet extends AbstractServlet {
 	}
 
 	@Override
-	public void doWork(HttpServletRequest req) {
+	public boolean doWork(HttpServletRequest req, HttpServletResponse resp) {
 		fetchAllProducts();
+		return true;
 	}
 
 	@Override
-	public String getDestination() {
+	public String getDestination(HttpServletRequest req, boolean success) {
 		return "product-list.ftl";
 	}
 

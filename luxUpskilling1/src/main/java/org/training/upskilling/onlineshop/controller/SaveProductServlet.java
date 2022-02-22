@@ -14,7 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class SaveProductServlet extends AbstractServlet {
+public class SaveProductServlet extends ProductServlet {
 
 	public SaveProductServlet(ProductService productService, ViewGenerator viewGenerator) {
 		super(productService, viewGenerator, true);
@@ -26,13 +26,14 @@ public class SaveProductServlet extends AbstractServlet {
 	}
 
 	@Override
-	public void doWork(HttpServletRequest req) throws ServletException {
+	public boolean doWork(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		addUpdateProduct(req);
 		fetchAllProducts();
+		return true;
 	}
 
 	@Override
-	public String getDestination() {
+	public String getDestination(HttpServletRequest req, boolean success) {
 		return "/products";
 	}
 

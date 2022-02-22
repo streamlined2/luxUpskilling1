@@ -1,9 +1,10 @@
-package org.training.upskilling.onlineshop.service.dto;
+package org.training.upskilling.onlineshop.service;
 
 import java.util.Optional;
 
 import org.training.upskilling.onlineshop.dao.UserDao;
-import org.training.upskilling.onlineshop.service.UserService;
+import org.training.upskilling.onlineshop.service.dto.UserDto;
+import org.training.upskilling.onlineshop.service.dto.UserMapper;
 
 import lombok.RequiredArgsConstructor;
 

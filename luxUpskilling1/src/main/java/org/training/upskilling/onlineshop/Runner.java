@@ -6,13 +6,19 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.training.upskilling.onlineshop.controller.CreateProductServlet;
 import org.training.upskilling.onlineshop.controller.DeleteProductServlet;
 import org.training.upskilling.onlineshop.controller.ListAllProductsServlet;
+import org.training.upskilling.onlineshop.controller.LoginServlet;
 import org.training.upskilling.onlineshop.controller.ModifyProductServlet;
 import org.training.upskilling.onlineshop.controller.SaveProductServlet;
 import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.dao.jdbc.ProductJdbcDao;
+import org.training.upskilling.onlineshop.dao.jdbc.UserJdbcDao;
 import org.training.upskilling.onlineshop.propertiesreader.EnvironmentPropertyReader;
+import org.training.upskilling.onlineshop.security.PasswordEncoder;
+import org.training.upskilling.onlineshop.security.TokenConverter;
 import org.training.upskilling.onlineshop.service.DefaultProductService;
+import org.training.upskilling.onlineshop.service.DefaultUserService;
 import org.training.upskilling.onlineshop.service.dto.ProductMapper;
+import org.training.upskilling.onlineshop.service.dto.UserMapper;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,10 +43,14 @@ public class Runner {
 						propertyReader.getIntegerProperty(MIN_IDLE, 5), propertyReader.getIntegerProperty(MAX_IDLE, 10),
 						propertyReader.getIntegerProperty(MAX_OPEN_PREPARED_STATEMENTS, 100))) {
 
+			var passwordEncoder = new PasswordEncoder();
+			var tokenConverter = new TokenConverter();
 			var viewGenerator = new ViewGenerator();
 			var productMapper = new ProductMapper();
 			var productService = new DefaultProductService(new ProductJdbcDao(connectionFactory, productMapper),
 					productMapper);
+			var userMapper = new UserMapper();
+			var userService = new DefaultUserService(new UserJdbcDao(connectionFactory, userMapper), userMapper);
 
 			var server = new Server(Integer.parseInt(propertyReader.getProperty(SERVER_PORT)));
 
@@ -58,6 +68,9 @@ public class Runner {
 					"/products/delete/*");
 			context.addServlet(new ServletHolder(new SaveProductServlet(productService, viewGenerator)),
 					"/saveproduct");
+			context.addServlet(
+					new ServletHolder(new LoginServlet(userService, viewGenerator, passwordEncoder, tokenConverter)),
+					"/login");
 
 			server.setHandler(context);
 
