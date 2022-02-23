@@ -1,11 +1,15 @@
 package org.training.upskilling.onlineshop;
 
+import java.util.EnumSet;
+
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.training.upskilling.onlineshop.controller.CreateProductServlet;
 import org.training.upskilling.onlineshop.controller.DeleteProductServlet;
 import org.training.upskilling.onlineshop.controller.ListAllProductsServlet;
+import org.training.upskilling.onlineshop.controller.LoginFormServlet;
 import org.training.upskilling.onlineshop.controller.LoginServlet;
 import org.training.upskilling.onlineshop.controller.ModifyProductServlet;
 import org.training.upskilling.onlineshop.controller.SaveProductServlet;
@@ -13,6 +17,7 @@ import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.dao.jdbc.ProductJdbcDao;
 import org.training.upskilling.onlineshop.dao.jdbc.UserJdbcDao;
 import org.training.upskilling.onlineshop.propertiesreader.EnvironmentPropertyReader;
+import org.training.upskilling.onlineshop.security.AuthenticationFilter;
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
 import org.training.upskilling.onlineshop.security.TokenConverter;
 import org.training.upskilling.onlineshop.service.DefaultProductService;
@@ -21,6 +26,7 @@ import org.training.upskilling.onlineshop.service.dto.ProductMapper;
 import org.training.upskilling.onlineshop.service.dto.UserMapper;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
+import jakarta.servlet.DispatcherType;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -68,9 +74,13 @@ public class Runner {
 					"/products/delete/*");
 			context.addServlet(new ServletHolder(new SaveProductServlet(productService, viewGenerator)),
 					"/saveproduct");
+			context.addServlet(new ServletHolder(new LoginFormServlet(viewGenerator)), "/loginform");
 			context.addServlet(
 					new ServletHolder(new LoginServlet(userService, viewGenerator, passwordEncoder, tokenConverter)),
 					"/login");
+
+			context.addFilter(new FilterHolder(new AuthenticationFilter(tokenConverter)), "/*",
+					EnumSet.allOf(DispatcherType.class));
 
 			server.setHandler(context);
 

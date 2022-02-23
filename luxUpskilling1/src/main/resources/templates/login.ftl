@@ -26,7 +26,6 @@
 			<input type="submit" value="Login" formaction="${context}/login" formmethod="post" />
 			<input type="reset" value="Reset" />
 			<input type="submit" value="Cancel" formaction="${context}/products" formmethod="get" formnovalidate />
-			<input type="hidden" id="targetUrl" name="targetUrl" value="${targetUrl}"/>
 		</fieldset>
 	</form>
 </body>

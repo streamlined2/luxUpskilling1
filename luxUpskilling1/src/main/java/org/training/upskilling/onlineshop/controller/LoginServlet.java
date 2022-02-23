@@ -19,17 +19,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class LoginServlet extends AbstractServlet {
-	
+
+	public static final String TARGET_URL_ATTRIBUTE = "targetUrl";
+	public static final String USER_TOKEN_COOKIE_NAME = "user-token";
 	private static final String USER_NAME_PARAMETER = "name";
 	private static final String PASSWORD_PARAMETER = "password";
-	private static final String TARGET_URL_PARAMETER = "targetUrl";
-	private static final String USER_TOKEN_COOKIE_NAME = "user-token";
 
 	private final UserService userService;
 	private final PasswordEncoder passwordEncoder;
 	private final TokenConverter tokenConverter;
 
-	public LoginServlet(UserService userService, ViewGenerator viewGenerator, PasswordEncoder passwordEncoder, TokenConverter tokenConverter) {
+	public LoginServlet(UserService userService, ViewGenerator viewGenerator, PasswordEncoder passwordEncoder,
+			TokenConverter tokenConverter) {
 		super(viewGenerator, true);
 		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
@@ -42,12 +43,17 @@ public class LoginServlet extends AbstractServlet {
 	}
 
 	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		processRequest(req, resp, HttpMethod.GET);
+	}
+
+	@Override
 	protected boolean doWork(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
 		String userName = getRequestParameter(req, USER_NAME_PARAMETER, "missing user name parameter");
 		String password = getRequestParameter(req, PASSWORD_PARAMETER, "missing password parameter");
 		Optional<UserDto> user = userService.findUserByName(userName);
 		boolean success = user.isPresent() && passwordEncoder.matches(user.get().encodedPassword(), password);
-		if(success) {
+		if (success) {
 			setToken(Token.getToken(), resp);
 		}
 		return success;
@@ -63,8 +69,12 @@ public class LoginServlet extends AbstractServlet {
 
 	@Override
 	protected String getDestination(HttpServletRequest req, boolean success) throws ServletException {
-		if(success) {
-			return getRequestParameter(req, TARGET_URL_PARAMETER, "missing target url parameter");
+		if (success) {
+			String targetUrl = (String) req.getAttribute(TARGET_URL_ATTRIBUTE);
+			if (targetUrl == null) {
+				throw new ServletException("missing target url parameter");
+			}
+			return targetUrl;
 		}
 		return "/";
 	}
