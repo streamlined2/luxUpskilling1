@@ -3,6 +3,11 @@ package org.training.upskilling.onlineshop.security;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
 public class Token {
 	
 	private static final SecureRandom random = new SecureRandom();

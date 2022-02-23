@@ -1,22 +1,24 @@
 package org.training.upskilling.onlineshop.security;
 
-import com.fasterxml.jackson.core.JacksonException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.text.ParsePosition;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 
 public class TokenConverter {
 	
-	private final ObjectMapper mapper;
-	
-	public TokenConverter() {
-		mapper = new ObjectMapper();
+	public String toString(Token token) {
+		return new StringBuilder()
+				.append(DateTimeFormatter.ISO_DATE_TIME.format(token.getExpirationTime()))
+				.append(Base64.getEncoder().encodeToString(token.getValue()))
+				.toString();
 	}
 	
-	public String toString(Token token) throws JacksonException {
-		return mapper.writeValueAsString(token);
-	}
-	
-	public Token parse(String value) throws JacksonException {
-		return mapper.readValue(value, Token.class);
+	public Token parse(String value) {
+		ParsePosition position = new ParsePosition(0);
+		LocalDateTime expirationTime = LocalDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(value, position));
+		byte[] bytes = Base64.getDecoder().decode(value.substring(position.getIndex()));
+		return new Token(bytes, expirationTime);
 	}
 
 }

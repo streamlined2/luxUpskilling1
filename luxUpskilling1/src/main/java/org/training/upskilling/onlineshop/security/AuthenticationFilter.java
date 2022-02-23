@@ -5,9 +5,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
+import org.training.upskilling.onlineshop.controller.AbstractServlet;
 import org.training.upskilling.onlineshop.controller.LoginServlet;
-
-import com.fasterxml.jackson.core.JacksonException;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -33,26 +32,32 @@ public class AuthenticationFilter implements Filter {
 		if (!isProtected(req.getContextPath(), req.getRequestURI()) || hasAccessRights(req.getCookies())) {
 			chain.doFilter(request, response);
 		} else {
-			req.setAttribute(LoginServlet.TARGET_URL_ATTRIBUTE, req.getRequestURL());
-			req.getRequestDispatcher("/loginform").forward(request, response);
+			request.setAttribute(AbstractServlet.TARGET_URL_ATTRIBUTE, getRequestURL(req));
+			request.getRequestDispatcher("/loginform").forward(request, response);
 		}
 	}
 
-	private boolean hasAccessRights(Cookie[] cookies) throws ServletException {
-		try {
-			Optional<String> tokenValue = Arrays.stream(cookies)
-					.filter(cookie -> LoginServlet.USER_TOKEN_COOKIE_NAME.equals(cookie.getName())).findFirst()
-					.map(Cookie::getValue);
-			if (tokenValue.isPresent()) {
-				Token token = tokenConverter.parse(tokenValue.get());
-				if (token.isValid()) {
-					return true;
-				}
-			}
-			return false;
-		} catch (JacksonException e) {
-			throw new ServletException("invalid token cannot be parsed", e);
+	private String getRequestURL(HttpServletRequest req) {
+		StringBuilder buf = new StringBuilder(req.getServletPath());
+		buf.append(req.getPathInfo());
+		String query = req.getQueryString();
+		if (query != null) {
+			buf.append(query);
 		}
+		return buf.toString();
+	}
+
+	private boolean hasAccessRights(Cookie[] cookies) throws ServletException {
+		Optional<String> tokenValue = Arrays.stream(cookies)
+				.filter(cookie -> LoginServlet.USER_TOKEN_COOKIE_NAME.equals(cookie.getName())).findFirst()
+				.map(Cookie::getValue);
+		if (tokenValue.isPresent()) {
+			Token token = tokenConverter.parse(tokenValue.get());
+			if (token.isValid()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private boolean isProtected(String context, String url) {

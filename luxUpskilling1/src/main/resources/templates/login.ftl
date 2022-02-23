@@ -17,7 +17,7 @@
 				</tr>
 				<tr>
 					<td><label for="password">Password</label></td>
-					<td><input type="text" id="password" name="password"
+					<td><input type="password" id="password" name="password"
 						placeholder="Enter user password" size="20"
 						pattern="(\w|\s){2,20}" title="User password" required /></td>
 				</tr>
@@ -26,6 +26,7 @@
 			<input type="submit" value="Login" formaction="${context}/login" formmethod="post" />
 			<input type="reset" value="Reset" />
 			<input type="submit" value="Cancel" formaction="${context}/products" formmethod="get" formnovalidate />
+			<input type="hidden" id="targetUrl" name="targetUrl" value="${targetUrl}" />
 		</fieldset>
 	</form>
 </body>

@@ -11,8 +11,6 @@ import org.training.upskilling.onlineshop.service.UserService;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
-import com.fasterxml.jackson.core.JacksonException;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +18,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class LoginServlet extends AbstractServlet {
 
-	public static final String TARGET_URL_ATTRIBUTE = "targetUrl";
 	public static final String USER_TOKEN_COOKIE_NAME = "user-token";
 	private static final String USER_NAME_PARAMETER = "name";
 	private static final String PASSWORD_PARAMETER = "password";
@@ -59,22 +56,14 @@ public class LoginServlet extends AbstractServlet {
 		return success;
 	}
 
-	private void setToken(Token token, HttpServletResponse resp) throws ServletException {
-		try {
-			resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, tokenConverter.toString(token)));
-		} catch (JacksonException e) {
-			throw new ServletException("can't convert token to string", e);
-		}
+	private void setToken(Token token, HttpServletResponse resp) {
+		resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, tokenConverter.toString(token)));
 	}
 
 	@Override
 	protected String getDestination(HttpServletRequest req, boolean success) throws ServletException {
 		if (success) {
-			String targetUrl = (String) req.getAttribute(TARGET_URL_ATTRIBUTE);
-			if (targetUrl == null) {
-				throw new ServletException("missing target url parameter");
-			}
-			return targetUrl;
+			return getRequestParameter(req, TARGET_URL_ATTRIBUTE, "missing target url parameter");
 		}
 		return "/";
 	}

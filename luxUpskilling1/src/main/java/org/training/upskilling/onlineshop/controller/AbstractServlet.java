@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class AbstractServlet extends HttpServlet {
 
+	public static final String TARGET_URL_ATTRIBUTE = "targetUrl";
 	protected static final String CONTEXT_PATH_ATTRIBUTE = "context";
 	private static final String TEMPLATE_VARIABLES_ATTRIBUTE = "parameters";
 	private static final String HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING = "HTTP method %s not allowed for servlet mapping %s";
