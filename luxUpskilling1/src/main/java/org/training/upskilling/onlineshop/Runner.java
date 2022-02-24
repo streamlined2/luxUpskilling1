@@ -19,7 +19,8 @@ import org.training.upskilling.onlineshop.dao.jdbc.UserJdbcDao;
 import org.training.upskilling.onlineshop.propertiesreader.EnvironmentPropertyReader;
 import org.training.upskilling.onlineshop.security.AuthenticationFilter;
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
-import org.training.upskilling.onlineshop.security.TokenConverter;
+import org.training.upskilling.onlineshop.security.service.DefaultSecurityService;
+import org.training.upskilling.onlineshop.security.token.TokenConverter;
 import org.training.upskilling.onlineshop.service.DefaultProductService;
 import org.training.upskilling.onlineshop.service.DefaultUserService;
 import org.training.upskilling.onlineshop.service.dto.ProductMapper;
@@ -49,8 +50,7 @@ public class Runner {
 						propertyReader.getIntegerProperty(MIN_IDLE, 5), propertyReader.getIntegerProperty(MAX_IDLE, 10),
 						propertyReader.getIntegerProperty(MAX_OPEN_PREPARED_STATEMENTS, 100))) {
 
-			var passwordEncoder = new PasswordEncoder();
-			var tokenConverter = new TokenConverter();
+			var securityService = new DefaultSecurityService(new PasswordEncoder(), new TokenConverter());
 			var viewGenerator = new ViewGenerator();
 			var productMapper = new ProductMapper();
 			var productService = new DefaultProductService(new ProductJdbcDao(connectionFactory, productMapper),
@@ -75,11 +75,10 @@ public class Runner {
 			context.addServlet(new ServletHolder(new SaveProductServlet(productService, viewGenerator)),
 					"/saveproduct");
 			context.addServlet(new ServletHolder(new LoginFormServlet(viewGenerator)), "/loginform");
-			context.addServlet(
-					new ServletHolder(new LoginServlet(userService, viewGenerator, passwordEncoder, tokenConverter)),
+			context.addServlet(new ServletHolder(new LoginServlet(userService, securityService, viewGenerator)),
 					"/login");
 
-			context.addFilter(new FilterHolder(new AuthenticationFilter(tokenConverter)), "/*",
+			context.addFilter(new FilterHolder(new AuthenticationFilter(securityService)), "/*",
 					EnumSet.allOf(DispatcherType.class));
 
 			server.setHandler(context);

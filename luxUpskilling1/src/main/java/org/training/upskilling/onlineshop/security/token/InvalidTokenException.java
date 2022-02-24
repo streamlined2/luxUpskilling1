@@ -1,4 +1,4 @@
-package org.training.upskilling.onlineshop.security;
+package org.training.upskilling.onlineshop.security.token;
 
 public class InvalidTokenException extends RuntimeException {
 

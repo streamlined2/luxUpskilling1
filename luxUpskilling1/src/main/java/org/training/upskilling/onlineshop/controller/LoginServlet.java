@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.eclipse.jetty.http.HttpMethod;
-import org.training.upskilling.onlineshop.security.PasswordEncoder;
-import org.training.upskilling.onlineshop.security.Token;
-import org.training.upskilling.onlineshop.security.TokenConverter;
+import org.training.upskilling.onlineshop.security.service.SecurityService;
 import org.training.upskilling.onlineshop.service.UserService;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
@@ -23,15 +21,12 @@ public class LoginServlet extends AbstractServlet {
 	private static final String PASSWORD_PARAMETER = "password";
 
 	private final UserService userService;
-	private final PasswordEncoder passwordEncoder;
-	private final TokenConverter tokenConverter;
+	private SecurityService securityService;
 
-	public LoginServlet(UserService userService, ViewGenerator viewGenerator, PasswordEncoder passwordEncoder,
-			TokenConverter tokenConverter) {
+	public LoginServlet(UserService userService, SecurityService securityService, ViewGenerator viewGenerator) {
 		super(viewGenerator, true);
 		this.userService = userService;
-		this.passwordEncoder = passwordEncoder;
-		this.tokenConverter = tokenConverter;
+		this.securityService = securityService;
 	}
 
 	@Override
@@ -49,15 +44,15 @@ public class LoginServlet extends AbstractServlet {
 		String userName = getRequestParameter(req, USER_NAME_PARAMETER, "missing user name parameter");
 		String password = getRequestParameter(req, PASSWORD_PARAMETER, "missing password parameter");
 		Optional<UserDto> user = userService.findUserByName(userName);
-		boolean success = user.isPresent() && passwordEncoder.matches(user.get().encodedPassword(), password);
+		boolean success = user.isPresent() && securityService.matches(user.get().encodedPassword(), password);
 		if (success) {
-			setToken(Token.getToken(), resp);
+			setNewToken(resp);
 		}
 		return success;
 	}
 
-	private void setToken(Token token, HttpServletResponse resp) {
-		resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, tokenConverter.toString(token)));
+	private void setNewToken(HttpServletResponse resp) {
+		resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, securityService.toString(securityService.createToken())));
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package org.training.upskilling.onlineshop.security;
+package org.training.upskilling.onlineshop.security.token;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
