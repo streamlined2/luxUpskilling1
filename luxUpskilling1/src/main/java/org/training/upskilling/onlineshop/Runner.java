@@ -41,6 +41,7 @@ public class Runner {
 	private static final String MIN_IDLE = "minIdle";
 	private static final String MAX_IDLE = "maxIdle";
 	private static final String MAX_OPEN_PREPARED_STATEMENTS = "maxOpenPreparedStatements";
+	private static final String TOKEN_LIFE_TIME = "tokenLifeTime";
 
 	public static void main(String[] args) {
 
@@ -50,7 +51,8 @@ public class Runner {
 						propertyReader.getIntegerProperty(MIN_IDLE, 5), propertyReader.getIntegerProperty(MAX_IDLE, 10),
 						propertyReader.getIntegerProperty(MAX_OPEN_PREPARED_STATEMENTS, 100))) {
 
-			var securityService = new DefaultSecurityService(new PasswordEncoder(), new TokenConverter());
+			var securityService = new DefaultSecurityService(new PasswordEncoder(), new TokenConverter(),
+					propertyReader.getIntegerProperty(TOKEN_LIFE_TIME));
 			var viewGenerator = new ViewGenerator();
 			var productMapper = new ProductMapper();
 			var productService = new DefaultProductService(new ProductJdbcDao(connectionFactory, productMapper),

@@ -16,6 +16,7 @@ public class DefaultSecurityService implements SecurityService {
 
 	private final PasswordEncoder passwordEncoder;
 	private final TokenConverter tokenConverter;
+	private final int tokenLifeTime;
 
 	@Override
 	public boolean isProtectedResource(String context, String resource) {
@@ -29,7 +30,7 @@ public class DefaultSecurityService implements SecurityService {
 
 	@Override
 	public Token createToken() {
-		return Token.getToken();
+		return new Token(tokenLifeTime);
 	}
 
 	@Override

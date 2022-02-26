@@ -7,10 +7,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class TokenConverter {
 
 	private static final String SHA_256 = "SHA-256";
-	private static final int SHA_256_BASE64_CHARS = 44;
+	private static final int SIGNATURE_LENGTH_DIGITS = 4;
 	private final MessageDigest digester;
 
 	public TokenConverter() throws NoSuchAlgorithmException {
@@ -32,22 +35,26 @@ public class TokenConverter {
 		String dateTimeValue = DateTimeFormatter.ISO_DATE_TIME.format(token.getExpirationTime());
 		String tokenValue = Base64.getEncoder().encodeToString(token.getValue());
 		String signature = getSignature(token);
-		return new StringBuilder().append(signature).append(dateTimeValue).append(tokenValue).toString();
+		return new StringBuilder().append(String.format("%0" + SIGNATURE_LENGTH_DIGITS + "d", signature.length()))
+				.append(signature).append(dateTimeValue).append(tokenValue).toString();
 	}
 
 	public Token parse(String value) {
-		String signature = value.substring(0, SHA_256_BASE64_CHARS);
-		ParsePosition position = new ParsePosition(SHA_256_BASE64_CHARS);
+		int signatureLength = Integer.parseInt(value.substring(0, SIGNATURE_LENGTH_DIGITS));
+		String signature = value.substring(SIGNATURE_LENGTH_DIGITS, SIGNATURE_LENGTH_DIGITS + signatureLength);
+		ParsePosition position = new ParsePosition(SIGNATURE_LENGTH_DIGITS + signatureLength);
 		LocalDateTime expirationTime = LocalDateTime.from(DateTimeFormatter.ISO_DATE_TIME.parse(value, position));
 		try {
 			byte[] bytes = Base64.getDecoder().decode(value.substring(position.getIndex()));
 			String mustBeSignature = getSignature(expirationTime, bytes);
 			if (!signature.equals(mustBeSignature)) {
-				throw new InvalidTokenException("this token is forged");
+				log.error("token {} is forged", value);
+				throw new InvalidTokenException(String.format("token %s is forged", value));
 			}
 			return new Token(bytes, expirationTime);
 		} catch (IllegalArgumentException e) {
-			throw new InvalidTokenException("invalid token format", e);
+			log.error("invalid token format of token {}", value);
+			throw new InvalidTokenException(String.format("invalid format of token %s", value));
 		}
 	}
 
