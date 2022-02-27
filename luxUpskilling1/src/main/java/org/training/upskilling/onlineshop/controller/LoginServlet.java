@@ -46,13 +46,13 @@ public class LoginServlet extends AbstractServlet {
 		Optional<UserDto> user = userService.findUserByName(userName);
 		boolean success = user.isPresent() && securityService.matches(user.get().encodedPassword(), password);
 		if (success) {
-			setNewToken(resp);
+			setNewToken(resp, user.get());
 		}
 		return success;
 	}
 
-	private void setNewToken(HttpServletResponse resp) {
-		resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, securityService.toString(securityService.createToken())));
+	private void setNewToken(HttpServletResponse resp, UserDto user) {
+		resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, securityService.toString(securityService.createToken(user))));
 	}
 
 	@Override

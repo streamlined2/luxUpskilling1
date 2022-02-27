@@ -45,6 +45,9 @@ public class AuthenticationFilter implements Filter {
 	}
 
 	private Optional<String> getTokenCookieValue(Cookie[] cookies) {
+		if (cookies == null) {
+			return Optional.empty();
+		}
 		return Arrays.stream(cookies).filter(cookie -> LoginServlet.USER_TOKEN_COOKIE_NAME.equals(cookie.getName()))
 				.findFirst().map(Cookie::getValue);
 	}

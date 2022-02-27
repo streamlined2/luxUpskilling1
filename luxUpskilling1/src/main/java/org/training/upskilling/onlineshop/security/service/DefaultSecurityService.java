@@ -1,10 +1,13 @@
 package org.training.upskilling.onlineshop.security.service;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
 import org.training.upskilling.onlineshop.security.token.Token;
 import org.training.upskilling.onlineshop.security.token.TokenConverter;
+import org.training.upskilling.onlineshop.service.dto.UserDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,6 +16,8 @@ public class DefaultSecurityService implements SecurityService {
 
 	private static final Set<String> PROTECTED_RESOURCES = Set.of("/products/add", "/products/edit", "/products/delete",
 			"/saveproduct");
+
+	private final Map<Token, UserDto> tokens = new ConcurrentHashMap<>();
 
 	private final PasswordEncoder passwordEncoder;
 	private final TokenConverter tokenConverter;
@@ -29,8 +34,10 @@ public class DefaultSecurityService implements SecurityService {
 	}
 
 	@Override
-	public Token createToken() {
-		return new Token(tokenLifeTime);
+	public Token createToken(UserDto user) {
+		Token token = new Token(tokenLifeTime);
+		tokens.put(token, user);
+		return token;
 	}
 
 	@Override
@@ -50,7 +57,7 @@ public class DefaultSecurityService implements SecurityService {
 
 	@Override
 	public boolean granted(Token token, String resource) {
-		return token.isValid();
+		return token.isValid() && tokens.containsKey(token);
 	}
 
 }
