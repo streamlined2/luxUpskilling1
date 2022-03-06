@@ -8,6 +8,8 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 
+import org.training.upskilling.onlineshop.security.MissingAlgorithmException;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,8 +20,12 @@ public class TokenConverter {
 	private static final int SIGNATURE_LENGTH_DIGITS = 4;
 	private final MessageDigest digester;
 
-	public TokenConverter() throws NoSuchAlgorithmException {
-		digester = MessageDigest.getInstance(SHA_256);
+	public TokenConverter() {
+		try {
+			digester = MessageDigest.getInstance(SHA_256);
+		} catch (NoSuchAlgorithmException e) {
+			throw new MissingAlgorithmException(String.format("no such algorithm %s", SHA_256), e);
+		}
 	}
 
 	private String getSignature(Token token) {
@@ -31,7 +37,7 @@ public class TokenConverter {
 		digester.update(Base64.getEncoder().encodeToString(value).getBytes());
 		return Base64.getEncoder().encodeToString(digester.digest());
 	}
-	
+
 	public String toString(Token token) {
 		String dateTimeValue = DATE_TIME_FORMATTER.format(token.getExpirationTime());
 		String tokenValue = Base64.getEncoder().encodeToString(token.getValue());

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.training.upskilling.onlineshop.model.User;
 
-public interface UserDao extends Dao<User, Long> {
+public interface UserDao {
 	
 	Optional<User> findByName(String name);
 

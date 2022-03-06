@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.training.upskilling.onlineshop.dao.UserDao;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
-import org.training.upskilling.onlineshop.service.dto.UserMapper;
+import org.training.upskilling.onlineshop.service.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
 

@@ -1,15 +1,14 @@
 package org.training.upskilling.onlineshop.security.service;
 
-import org.training.upskilling.onlineshop.security.token.Token;
+import java.util.Optional;
+
 import org.training.upskilling.onlineshop.service.dto.UserDto;
 
 public interface SecurityService {
 	
-	Token createToken(UserDto user);
-	Token parse(String string);
-	String toString(Token token);
-	boolean matches(String encodedPassword, String password);
+	String newTokenValue(UserDto user);
+	boolean retrieveTokenAndCheckAccess(String tokenValue, String resource);
+	boolean isValidUser(Optional<UserDto> user, String password);
 	boolean isProtectedResource(String context, String resource);
-	boolean granted(Token token, String resource);
 
 }

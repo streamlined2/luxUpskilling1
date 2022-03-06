@@ -1,12 +1,11 @@
-package org.training.upskilling.onlineshop.security;
+package org.training.upskilling.onlineshop.controller.security;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import org.training.upskilling.onlineshop.controller.AbstractServlet;
-import org.training.upskilling.onlineshop.controller.LoginServlet;
+import static org.training.upskilling.onlineshop.controller.LoginServlet.USER_TOKEN_COOKIE_NAME;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
-import org.training.upskilling.onlineshop.security.token.Token;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,20 +44,14 @@ public class AuthenticationFilter implements Filter {
 	}
 
 	private Optional<String> getTokenCookieValue(Cookie[] cookies) {
-		if (cookies == null) {
-			return Optional.empty();
-		}
-		return Arrays.stream(cookies).filter(cookie -> LoginServlet.USER_TOKEN_COOKIE_NAME.equals(cookie.getName()))
-				.findFirst().map(Cookie::getValue);
+		return cookies == null ? Optional.empty()
+				: Arrays.stream(cookies).filter(cookie -> USER_TOKEN_COOKIE_NAME.equals(cookie.getName())).findFirst()
+						.map(Cookie::getValue);
 	}
 
 	private boolean hasAccess(Cookie[] cookies, String resource) {
-		Optional<String> tokenValue = getTokenCookieValue(cookies);
-		if (tokenValue.isPresent()) {
-			Token token = securityService.parse(tokenValue.get());
-			return securityService.granted(token, resource);
-		}
-		return false;
+		return getTokenCookieValue(cookies)
+				.map(tokenValue -> securityService.retrieveTokenAndCheckAccess(tokenValue, resource)).orElse(false);
 	}
 
 }

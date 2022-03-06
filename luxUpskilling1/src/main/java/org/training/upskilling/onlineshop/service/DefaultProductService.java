@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.training.upskilling.onlineshop.dao.Dao;
 import org.training.upskilling.onlineshop.model.Product;
 import org.training.upskilling.onlineshop.service.dto.ProductDto;
-import org.training.upskilling.onlineshop.service.dto.ProductMapper;
+import org.training.upskilling.onlineshop.service.mapper.ProductMapper;
 
 import lombok.RequiredArgsConstructor;
 

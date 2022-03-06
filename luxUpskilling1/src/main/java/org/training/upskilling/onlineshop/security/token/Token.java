@@ -29,8 +29,4 @@ public class Token {
 		expirationTime = LocalDateTime.now().plusSeconds(lifeTime);
 	}
 	
-	public boolean isValid() {
-		return expirationTime.isAfter(LocalDateTime.now());
-	}
-	
 }

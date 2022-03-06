@@ -13,18 +13,20 @@ import org.training.upskilling.onlineshop.controller.LoginFormServlet;
 import org.training.upskilling.onlineshop.controller.LoginServlet;
 import org.training.upskilling.onlineshop.controller.ModifyProductServlet;
 import org.training.upskilling.onlineshop.controller.SaveProductServlet;
+import org.training.upskilling.onlineshop.controller.security.AuthenticationFilter;
 import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
-import org.training.upskilling.onlineshop.dao.jdbc.ProductJdbcDao;
-import org.training.upskilling.onlineshop.dao.jdbc.UserJdbcDao;
+import org.training.upskilling.onlineshop.dao.jdbc.product.ProductJdbcDao;
+import org.training.upskilling.onlineshop.dao.jdbc.product.ProductJdbcHelper;
+import org.training.upskilling.onlineshop.dao.jdbc.user.UserJdbcDao;
+import org.training.upskilling.onlineshop.dao.jdbc.user.UserJdbcHelper;
 import org.training.upskilling.onlineshop.propertiesreader.EnvironmentPropertyReader;
-import org.training.upskilling.onlineshop.security.AuthenticationFilter;
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
 import org.training.upskilling.onlineshop.security.service.DefaultSecurityService;
 import org.training.upskilling.onlineshop.security.token.TokenConverter;
 import org.training.upskilling.onlineshop.service.DefaultProductService;
 import org.training.upskilling.onlineshop.service.DefaultUserService;
-import org.training.upskilling.onlineshop.service.dto.ProductMapper;
-import org.training.upskilling.onlineshop.service.dto.UserMapper;
+import org.training.upskilling.onlineshop.service.mapper.ProductMapper;
+import org.training.upskilling.onlineshop.service.mapper.UserMapper;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 import jakarta.servlet.DispatcherType;
@@ -35,30 +37,23 @@ public class Runner {
 
 	private static final String CONTEXT = "/onlineshop";
 	private static final String SERVER_PORT = "port";
-	private static final String URL = "url";
-	private static final String USER = "user";
-	private static final String PASSWORD = "password";
-	private static final String MIN_IDLE = "minIdle";
-	private static final String MAX_IDLE = "maxIdle";
-	private static final String MAX_OPEN_PREPARED_STATEMENTS = "maxOpenPreparedStatements";
 	private static final String TOKEN_LIFE_TIME = "tokenLifeTime";
 
 	public static void main(String[] args) {
 
 		try (var propertyReader = new EnvironmentPropertyReader();
-				var connectionFactory = new JdbcConnectionFactory(propertyReader.getProperty(URL),
-						propertyReader.getProperty(USER), propertyReader.getProperty(PASSWORD),
-						propertyReader.getIntegerProperty(MIN_IDLE, 5), propertyReader.getIntegerProperty(MAX_IDLE, 10),
-						propertyReader.getIntegerProperty(MAX_OPEN_PREPARED_STATEMENTS, 100))) {
+				var connectionFactory = JdbcConnectionFactory.getConnectionFactory(propertyReader)) {
+
+			var productService = new DefaultProductService(
+					new ProductJdbcDao(connectionFactory, new ProductJdbcHelper()), new ProductMapper());
+
+			var userService = new DefaultUserService(new UserJdbcDao(connectionFactory, new UserJdbcHelper()),
+					new UserMapper());
+
+			var viewGenerator = new ViewGenerator();
 
 			var securityService = new DefaultSecurityService(new PasswordEncoder(), new TokenConverter(),
 					propertyReader.getIntegerProperty(TOKEN_LIFE_TIME));
-			var viewGenerator = new ViewGenerator();
-			var productMapper = new ProductMapper();
-			var productService = new DefaultProductService(new ProductJdbcDao(connectionFactory, productMapper),
-					productMapper);
-			var userMapper = new UserMapper();
-			var userService = new DefaultUserService(new UserJdbcDao(connectionFactory, userMapper), userMapper);
 
 			var server = new Server(Integer.parseInt(propertyReader.getProperty(SERVER_PORT)));
 

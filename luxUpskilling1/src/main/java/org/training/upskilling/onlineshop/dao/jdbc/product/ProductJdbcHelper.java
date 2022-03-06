@@ -1,4 +1,4 @@
-package org.training.upskilling.onlineshop.service.dto;
+package org.training.upskilling.onlineshop.dao.jdbc.product;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -11,16 +11,7 @@ import org.training.upskilling.onlineshop.model.Product;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProductMapper {
-
-	public ProductDto toDto(Product product) {
-		return new ProductDto(product.getId(), product.getName(), product.getPrice(), product.getCreationDate());
-	}
-
-	public Product toProduct(ProductDto dto) {
-		return Product.builder().id(dto.id()).name(dto.name()).price(dto.price()).creationDate(dto.creationDate())
-				.build();
-	}
+public class ProductJdbcHelper {
 
 	public Product toProduct(ResultSet resultSet) {
 		try {
@@ -38,9 +29,9 @@ public class ProductMapper {
 			statement.setBigDecimal(2, product.getPrice());
 			statement.setDate(3, Date.valueOf(product.getCreationDate()));
 		} catch (SQLException e) {
-			log.error("can't fill in INSERT statement's parameters for product {}", toDto(product));
+			log.error("can't fill in INSERT statement's parameters for product with id {}", product.getId());
 			throw new DataAccessException(
-					String.format("can't fill in INSERT statement's parameters for product %s", toDto(product)), e);
+					String.format("can't fill in INSERT statement's parameters for product with id %d", product.getId()), e);
 		}
 	}
 
@@ -50,9 +41,9 @@ public class ProductMapper {
 			statement.setBigDecimal(2, product.getPrice());
 			statement.setLong(3, product.getId());
 		} catch (SQLException e) {
-			log.error("can't fill in UPDATE statement's parameters for product {}", toDto(product));
+			log.error("can't fill in UPDATE statement's parameters for product with id {}", product.getId());
 			throw new DataAccessException(
-					String.format("can't fill in UPDATE statement's parameters for product %s", toDto(product)), e);
+					String.format("can't fill in UPDATE statement's parameters for product with id %s", product.getId()), e);
 		}
 	}
 

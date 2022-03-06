@@ -44,15 +44,15 @@ public class LoginServlet extends AbstractServlet {
 		String userName = getRequestParameter(req, USER_NAME_PARAMETER, "missing user name parameter");
 		String password = getRequestParameter(req, PASSWORD_PARAMETER, "missing password parameter");
 		Optional<UserDto> user = userService.findUserByName(userName);
-		boolean success = user.isPresent() && securityService.matches(user.get().encodedPassword(), password);
-		if (success) {
+		if (securityService.isValidUser(user, password)) {
 			setNewToken(resp, user.get());
+			return true;
 		}
-		return success;
+		return false;
 	}
 
 	private void setNewToken(HttpServletResponse resp, UserDto user) {
-		resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, securityService.toString(securityService.createToken(user))));
+		resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, securityService.newTokenValue(user)));
 	}
 
 	@Override

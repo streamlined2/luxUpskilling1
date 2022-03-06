@@ -12,8 +12,9 @@ import lombok.Setter;
 @EqualsAndHashCode(of = { "id" })
 public class User {
 
-	private long id;
+	private Long id;
 	private String name;
 	private String encodedPassword;
+	private String salt;
 	
 }

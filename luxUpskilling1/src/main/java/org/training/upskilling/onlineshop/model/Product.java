@@ -15,7 +15,7 @@ import lombok.Setter;
 @EqualsAndHashCode(of = { "id" })
 public class Product {
 
-	private long id;
+	private Long id;
 	private String name;
 	private BigDecimal price;
 	private LocalDate creationDate;
