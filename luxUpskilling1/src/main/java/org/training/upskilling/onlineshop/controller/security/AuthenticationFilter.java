@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import org.training.upskilling.onlineshop.controller.AbstractServlet;
-import static org.training.upskilling.onlineshop.controller.LoginServlet.USER_TOKEN_COOKIE_NAME;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -14,6 +13,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import static org.training.upskilling.onlineshop.controller.AbstractServlet.USER_TOKEN_COOKIE_NAME;
 
 @RequiredArgsConstructor
 public class AuthenticationFilter implements Filter {

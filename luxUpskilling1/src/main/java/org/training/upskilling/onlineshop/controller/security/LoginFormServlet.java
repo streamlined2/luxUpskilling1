@@ -1,8 +1,6 @@
-package org.training.upskilling.onlineshop.controller;
+package org.training.upskilling.onlineshop.controller.security;
 
-import java.io.IOException;
-
-import org.eclipse.jetty.http.HttpMethod;
+import org.training.upskilling.onlineshop.controller.AbstractServlet;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 import jakarta.servlet.ServletException;
@@ -13,16 +11,6 @@ public class LoginFormServlet extends AbstractServlet {
 
 	public LoginFormServlet(ViewGenerator viewGenerator) {
 		super(viewGenerator, false);
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		processRequest(req, resp, HttpMethod.GET);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		processRequest(req, resp, HttpMethod.POST);
 	}
 
 	@Override

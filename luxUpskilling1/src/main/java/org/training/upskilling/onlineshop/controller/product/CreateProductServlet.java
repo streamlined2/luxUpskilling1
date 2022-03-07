@@ -1,8 +1,5 @@
-package org.training.upskilling.onlineshop.controller;
+package org.training.upskilling.onlineshop.controller.product;
 
-import java.io.IOException;
-
-import org.eclipse.jetty.http.HttpMethod;
 import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
@@ -14,11 +11,6 @@ public class CreateProductServlet extends ProductServlet {
 
 	public CreateProductServlet(ProductService productService, ViewGenerator viewGenerator) {
 		super(productService, viewGenerator);
-	}
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		processRequest(req, resp, HttpMethod.GET);
 	}
 
 	@Override

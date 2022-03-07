@@ -1,11 +1,9 @@
-package org.training.upskilling.onlineshop.controller;
+package org.training.upskilling.onlineshop.controller.product;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import org.eclipse.jetty.http.HttpMethod;
 import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.service.dto.ProductDto;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
@@ -18,11 +16,6 @@ public class SaveProductServlet extends ProductServlet {
 
 	public SaveProductServlet(ProductService productService, ViewGenerator viewGenerator) {
 		super(productService, viewGenerator, true);
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		processRequest(req, resp, HttpMethod.POST);
 	}
 
 	@Override

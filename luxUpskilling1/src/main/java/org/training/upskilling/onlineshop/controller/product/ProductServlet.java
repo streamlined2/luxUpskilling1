@@ -1,5 +1,6 @@
-package org.training.upskilling.onlineshop.controller;
+package org.training.upskilling.onlineshop.controller.product;
 
+import org.training.upskilling.onlineshop.controller.AbstractServlet;
 import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 

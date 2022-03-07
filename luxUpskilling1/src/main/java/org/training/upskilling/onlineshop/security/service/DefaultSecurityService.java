@@ -26,18 +26,19 @@ public class DefaultSecurityService implements SecurityService {
 
 	@Override
 	public boolean isProtectedResource(String context, String resource) {
-		return PROTECTED_RESOURCES.stream().anyMatch(
-				protectedResource -> resource.regionMatches(context.length(), protectedResource, 0, protectedResource.length()));
+		return PROTECTED_RESOURCES.stream().anyMatch(protectedResource -> resource.regionMatches(context.length(),
+				protectedResource, 0, protectedResource.length()));
 	}
 
 	@Override
-	public String newTokenValue(UserDto user) {
+	public String getNewTokenValue(Optional<UserDto> user) {
 		return toString(createAndRegisterToken(user));
 	}
 
 	@Override
 	public boolean isValidUser(Optional<UserDto> user, String password) {
-		return user.map(validUser -> passwordEncoder.matches(validUser.encodedPassword(), password)).orElse(false);
+		return user.map(validUser -> passwordEncoder.matches(validUser.encodedPassword(), password, validUser.salt()))
+				.orElse(false);
 	}
 
 	@Override
@@ -45,9 +46,9 @@ public class DefaultSecurityService implements SecurityService {
 		return isGranted(tokenConverter.parse(tokenValue), resource);
 	}
 
-	private Token createAndRegisterToken(UserDto user) {
+	private Token createAndRegisterToken(Optional<UserDto> user) {
 		Token token = new Token(tokenLifeTime);
-		tokens.put(token, user);
+		tokens.put(token, user.orElseThrow(NoValidUserException::new));
 		return token;
 	}
 

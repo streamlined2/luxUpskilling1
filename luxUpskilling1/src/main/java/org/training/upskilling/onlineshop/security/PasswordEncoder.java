@@ -21,12 +21,12 @@ public class PasswordEncoder {
 		}
 	}
 
-	public String encode(String password) {
-		return Base64.getEncoder().encodeToString(digester.digest(password.getBytes()));
+	public String encode(String password, String salt) {
+		return Base64.getEncoder().encodeToString(digester.digest((password + salt).getBytes()));
 	}
 
-	public boolean matches(String encodedPassword, String password) {
-		return encodedPassword.equals(encode(password));
+	public boolean matches(String encodedPassword, String password, String salt) {
+		return encodedPassword.equals(encode(password, salt));
 	}
 
 }

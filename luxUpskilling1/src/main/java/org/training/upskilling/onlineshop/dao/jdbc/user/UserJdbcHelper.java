@@ -12,13 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 public class UserJdbcHelper {
 
 	public User toUser(ResultSet resultSet) {
-	    try {
-	        return User.builder().id(resultSet.getLong(1)).name(resultSet.getString(2))
-	                .encodedPassword(resultSet.getString(3)).build();
-	    } catch (SQLException e) {
-	        log.error("can't convert query result to user entity");
-	        throw new DataAccessException("can't convert query result to user entity", e);
-	    }
+		try {
+			return User.builder().id(resultSet.getLong("id")).name(resultSet.getString("name"))
+					.encodedPassword(resultSet.getString("password")).salt(resultSet.getString("salt")).build();
+		} catch (SQLException e) {
+			log.error("can't convert query result to user entity");
+			throw new DataAccessException("can't convert query result to user entity", e);
+		}
 	}
 
 }

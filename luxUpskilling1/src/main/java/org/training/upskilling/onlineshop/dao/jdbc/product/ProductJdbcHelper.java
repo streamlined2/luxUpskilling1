@@ -15,8 +15,8 @@ public class ProductJdbcHelper {
 
 	public Product toProduct(ResultSet resultSet) {
 		try {
-			return Product.builder().id(resultSet.getLong(1)).name(resultSet.getString(2))
-					.price(resultSet.getBigDecimal(3)).creationDate(resultSet.getDate(4).toLocalDate()).build();
+			return Product.builder().id(resultSet.getLong("id")).name(resultSet.getString("name"))
+					.price(resultSet.getBigDecimal("price")).creationDate(resultSet.getDate("creation_date").toLocalDate()).build();
 		} catch (SQLException e) {
 			log.error("can't convert query result to product entity");
 			throw new DataAccessException("can't convert query result to product entity", e);

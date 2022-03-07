@@ -21,7 +21,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String TABLE_NAME = "user";
 
 	private static final String FETCH_ENTITY_BY_NAME_STATEMENT = String
-			.format("SELECT id, name, password FROM %s.%s WHERE name=?", SCHEMA, TABLE_NAME);
+			.format("SELECT id, name, password, salt FROM %s.%s WHERE name=?", SCHEMA, TABLE_NAME);
 
 	private final JdbcConnectionFactory connectionFactory;
 	private final UserJdbcHelper helper;

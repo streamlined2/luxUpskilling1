@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.jetty.http.HttpMethod;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 import jakarta.servlet.ServletException;
@@ -17,20 +16,20 @@ import lombok.RequiredArgsConstructor;
 public abstract class AbstractServlet extends HttpServlet {
 
 	public static final String TARGET_URL_ATTRIBUTE = "targetUrl";
+	public static final String USER_TOKEN_COOKIE_NAME = "user-token";
 	protected static final String CONTEXT_PATH_ATTRIBUTE = "context";
 	private static final String TEMPLATE_VARIABLES_ATTRIBUTE = "parameters";
-	private static final String HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING = "HTTP method %s not allowed for servlet mapping %s";
 
 	protected final ViewGenerator viewGenerator;
 	protected final boolean makeNewRequest;
 
-	protected void processRequest(HttpServletRequest req, HttpServletResponse resp, HttpMethod httpMethod)
+	protected void processRequest(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		setTemplateVariable(CONTEXT_PATH_ATTRIBUTE, getServletContext().getContextPath());
 		boolean success = doWork(req, resp);
 		if (makeNewRequest) {
 			resp.sendRedirect(req.getContextPath() + getDestination(req, success));
 		} else {
+			setTemplateVariable(CONTEXT_PATH_ATTRIBUTE, getServletContext().getContextPath());
 			resp.setContentType("text/html;charset=UTF-8");
 			resp.setStatus(HttpServletResponse.SC_OK);
 			viewGenerator.writeView(getDestination(req, success), getTemplateVariables(), resp.getWriter());
@@ -40,48 +39,6 @@ public abstract class AbstractServlet extends HttpServlet {
 	protected abstract boolean doWork(HttpServletRequest req, HttpServletResponse resp) throws ServletException;
 
 	protected abstract String getDestination(HttpServletRequest req, boolean success) throws ServletException;
-
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
-				HttpMethod.GET.name(), req.getServletPath()));
-	}
-
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
-				HttpMethod.POST.name(), req.getServletPath()));
-	}
-
-	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
-				HttpMethod.PUT.name(), req.getServletPath()));
-	}
-
-	@Override
-	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
-				HttpMethod.DELETE.name(), req.getServletPath()));
-	}
-
-	@Override
-	protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
-				HttpMethod.HEAD.name(), req.getServletPath()));
-	}
-
-	@Override
-	protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
-				HttpMethod.OPTIONS.name(), req.getServletPath()));
-	}
-
-	@Override
-	protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		throw new ServletException(String.format(HTTP_METHOD_NOT_ALLOWED_FOR_SERVLET_MAPPING,
-				HttpMethod.TRACE.name(), req.getServletPath()));
-	}
 
 	protected String getRequestParameter(HttpServletRequest req, String paramName, String exceptionMessage)
 			throws ServletException {
@@ -116,6 +73,16 @@ public abstract class AbstractServlet extends HttpServlet {
 			throw new ServletException(exceptionMessage);
 		}
 		return variable;
+	}
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		processRequest(req, resp);
+	}
+
+	@Override
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		processRequest(req, resp);
 	}
 
 }
