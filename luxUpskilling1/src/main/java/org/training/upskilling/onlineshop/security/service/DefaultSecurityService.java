@@ -25,9 +25,26 @@ public class DefaultSecurityService implements SecurityService {
 	private final int tokenLifeTime;
 
 	@Override
-	public boolean isProtectedResource(String context, String resource) {
+	public boolean hasAccess(String context, String requestURI, Optional<String> tokenCookieValue) {
+		return !isProtectedResource(context, requestURI) || tokenGrantsAccess(requestURI, tokenCookieValue);
+	}
+
+	private boolean isProtectedResource(String context, String resource) {
 		return PROTECTED_RESOURCES.stream().anyMatch(protectedResource -> resource.regionMatches(context.length(),
 				protectedResource, 0, protectedResource.length()));
+	}
+
+	private boolean tokenGrantsAccess(String requestURI, Optional<String> tokenCookieValue) {
+		return tokenCookieValue
+				.map(tokenValue -> isGranted(tokenConverter.parse(tokenValue), requestURI)).orElse(false);
+	}
+
+	private boolean isGranted(Token token, String resource) {
+		return isValid(token) && tokens.containsKey(token);
+	}
+
+	private boolean isValid(Token token) {
+		return token.getExpirationTime().isAfter(LocalDateTime.now());
 	}
 
 	@Override
@@ -41,11 +58,6 @@ public class DefaultSecurityService implements SecurityService {
 				.orElse(false);
 	}
 
-	@Override
-	public boolean retrieveTokenAndCheckAccess(String tokenValue, String resource) {
-		return isGranted(tokenConverter.parse(tokenValue), resource);
-	}
-
 	private Token createAndRegisterToken(Optional<UserDto> user) {
 		Token token = new Token(tokenLifeTime);
 		tokens.put(token, user.orElseThrow(NoValidUserException::new));
@@ -54,14 +66,6 @@ public class DefaultSecurityService implements SecurityService {
 
 	private String toString(Token token) {
 		return tokenConverter.toString(token);
-	}
-
-	private boolean isGranted(Token token, String resource) {
-		return isValid(token) && tokens.containsKey(token);
-	}
-
-	private boolean isValid(Token token) {
-		return token.getExpirationTime().isAfter(LocalDateTime.now());
 	}
 
 }
