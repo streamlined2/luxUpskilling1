@@ -17,9 +17,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DefaultSecurityService implements SecurityService {
 
-	private static final Map<Role, String> PROTECTED_RESOURCES = Map.of(Role.ADMIN, "/product/add", Role.ADMIN,
-			"/product/edit", Role.ADMIN, "/product/delete", Role.ADMIN, "/saveproduct", Role.USER, "/product/cart/add",
-			Role.USER, "/product/cart/delete");
+	private static final Map<String, Role> PROTECTED_RESOURCES = Map.of(
+			"/product/add", Role.ADMIN,
+			"/product/edit", Role.ADMIN, 
+			"/product/delete", Role.ADMIN, 
+			"/saveproduct", Role.ADMIN,  
+			"/product/cart/add", Role.USER,
+			"/product/cart/delete", Role.USER);
 
 	private final Map<Token, Session> sessions = new ConcurrentHashMap<>();
 
@@ -33,7 +37,7 @@ public class DefaultSecurityService implements SecurityService {
 	}
 
 	private boolean isProtectedResource(String context, String resource) {
-		return PROTECTED_RESOURCES.values().stream().anyMatch(protectedResource -> resource
+		return PROTECTED_RESOURCES.keySet().stream().anyMatch(protectedResource -> resource
 				.regionMatches(context.length(), protectedResource, 0, protectedResource.length()));
 	}
 
@@ -49,7 +53,7 @@ public class DefaultSecurityService implements SecurityService {
 		}
 		Role role = Role.getRole(session.getUser().role());
 		return PROTECTED_RESOURCES.entrySet().stream()
-				.anyMatch(entry -> entry.getKey().equals(role) && resource.startsWith(entry.getValue()));
+				.anyMatch(entry -> entry.getValue().equals(role) && resource.startsWith(entry.getKey()));
 	}
 
 	private boolean isValid(Session session) {
