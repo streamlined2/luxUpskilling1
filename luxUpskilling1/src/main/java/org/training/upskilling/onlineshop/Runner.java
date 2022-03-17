@@ -23,6 +23,7 @@ import org.training.upskilling.onlineshop.propertiesreader.EnvironmentPropertyRe
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
 import org.training.upskilling.onlineshop.security.service.DefaultSecurityService;
 import org.training.upskilling.onlineshop.security.token.TokenConverter;
+import org.training.upskilling.onlineshop.service.DefaultOrderService;
 import org.training.upskilling.onlineshop.service.DefaultProductService;
 import org.training.upskilling.onlineshop.service.DefaultUserService;
 import org.training.upskilling.onlineshop.service.mapper.ProductMapper;
@@ -44,6 +45,8 @@ public class Runner {
 		try (var propertyReader = new EnvironmentPropertyReader();
 				var connectionFactory = JdbcConnectionFactory.getConnectionFactory(propertyReader)) {
 
+			var orderService = new DefaultOrderService();
+			
 			var productService = new DefaultProductService(
 					new ProductJdbcDao(connectionFactory, new ProductJdbcHelper()), new ProductMapper());
 

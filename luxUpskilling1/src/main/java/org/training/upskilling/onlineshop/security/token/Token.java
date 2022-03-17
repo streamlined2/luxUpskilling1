@@ -1,6 +1,5 @@
 package org.training.upskilling.onlineshop.security.token;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import lombok.EqualsAndHashCode;
@@ -13,11 +12,9 @@ import lombok.RequiredArgsConstructor;
 public class Token {
 	
 	private final UUID uuid;
-	private final LocalDateTime expirationTime;
 	
-	public Token(long lifeTime) {
+	public Token() {
 		uuid = UUID.randomUUID();
-		expirationTime = LocalDateTime.now().plusSeconds(lifeTime);
 	}
 	
 }

@@ -19,7 +19,7 @@ public class LoginServlet extends AbstractServlet {
 	private static final String PASSWORD_PARAMETER = "password";
 
 	private final UserService userService;
-	private SecurityService securityService;
+	private final SecurityService securityService;
 
 	public LoginServlet(UserService userService, SecurityService securityService, ViewGenerator viewGenerator) {
 		super(viewGenerator, true);
@@ -32,14 +32,14 @@ public class LoginServlet extends AbstractServlet {
 		String userName = getRequestParameter(req, USER_NAME_PARAMETER, "missing user name parameter");
 		String password = getRequestParameter(req, PASSWORD_PARAMETER, "missing password parameter");
 		Optional<UserDto> user = userService.findUserByName(userName);
-		if (securityService.isValidUser(user, password)) {
-			setNewToken(resp, user);
+		if (user.isPresent() && securityService.isValidUser(user, password)) {
+			setNewToken(resp, user.get());
 			return true;
 		}
 		return false;
 	}
 
-	private void setNewToken(HttpServletResponse resp, Optional<UserDto> user) {
+	private void setNewToken(HttpServletResponse resp, UserDto user) {
 		resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, securityService.getNewTokenValue(user)));
 	}
 

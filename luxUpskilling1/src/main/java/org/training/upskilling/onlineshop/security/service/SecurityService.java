@@ -6,7 +6,7 @@ import org.training.upskilling.onlineshop.service.dto.UserDto;
 
 public interface SecurityService {
 	
-	String getNewTokenValue(Optional<UserDto> user);
+	String getNewTokenValue(UserDto user);
 	boolean isValidUser(Optional<UserDto> user, String password);
 	boolean hasAccess(String context, String resource, Optional<String> tokenCookieValue);
 
