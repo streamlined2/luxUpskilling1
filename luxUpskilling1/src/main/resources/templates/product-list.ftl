@@ -13,6 +13,7 @@ th, td {
 </style>
 </head>
 <body>
+	<a href=${context}/loginform>Login</a>
 	<table>
 		<caption>
 			<h3>Products by name</h3>
