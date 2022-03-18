@@ -1,6 +1,7 @@
 package org.training.upskilling.onlineshop.controller.product;
 
 import org.training.upskilling.onlineshop.controller.AbstractServlet;
+import org.training.upskilling.onlineshop.security.service.SecurityService;
 import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
@@ -19,12 +20,12 @@ public abstract class ProductServlet extends AbstractServlet {
 
 	protected final ProductService productService;
 
-	protected ProductServlet(ProductService productService, ViewGenerator viewGenerator) {
-		this(productService, viewGenerator, false);
+	protected ProductServlet(SecurityService securityService, ProductService productService, ViewGenerator viewGenerator) {
+		this(securityService, productService, viewGenerator, false);
 	}
 
-	protected ProductServlet(ProductService productService, ViewGenerator viewGenerator, boolean modifying) {
-		super(viewGenerator, modifying);
+	protected ProductServlet(SecurityService securityService, ProductService productService, ViewGenerator viewGenerator, boolean modifying) {
+		super(securityService, viewGenerator, modifying);
 		this.productService = productService;
 	}
 

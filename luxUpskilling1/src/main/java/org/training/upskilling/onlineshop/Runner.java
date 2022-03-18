@@ -14,6 +14,7 @@ import org.training.upskilling.onlineshop.controller.product.SaveProductServlet;
 import org.training.upskilling.onlineshop.controller.security.AuthenticationFilter;
 import org.training.upskilling.onlineshop.controller.security.LoginFormServlet;
 import org.training.upskilling.onlineshop.controller.security.LoginServlet;
+import org.training.upskilling.onlineshop.controller.security.LogoutServlet;
 import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.dao.jdbc.product.ProductJdbcDao;
 import org.training.upskilling.onlineshop.dao.jdbc.product.ProductJdbcHelper;
@@ -46,7 +47,7 @@ public class Runner {
 				var connectionFactory = JdbcConnectionFactory.getConnectionFactory(propertyReader)) {
 
 			var orderService = new DefaultOrderService();
-			
+
 			var productService = new DefaultProductService(
 					new ProductJdbcDao(connectionFactory, new ProductJdbcHelper()), new ProductMapper());
 
@@ -63,20 +64,26 @@ public class Runner {
 			var context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 			context.setContextPath(CONTEXT);
 
-			var listAllProductsHolder = new ServletHolder(new ListAllProductsServlet(productService, viewGenerator));
+			var listAllProductsHolder = new ServletHolder(
+					new ListAllProductsServlet(securityService, productService, viewGenerator));
 			context.addServlet(listAllProductsHolder, "/");
 			context.addServlet(listAllProductsHolder, "/products");
-			context.addServlet(new ServletHolder(new CreateProductServlet(productService, viewGenerator)),
+			context.addServlet(
+					new ServletHolder(new CreateProductServlet(securityService, productService, viewGenerator)),
 					"/products/add");
-			context.addServlet(new ServletHolder(new ModifyProductServlet(productService, viewGenerator)),
+			context.addServlet(
+					new ServletHolder(new ModifyProductServlet(securityService, productService, viewGenerator)),
 					"/products/edit/*");
-			context.addServlet(new ServletHolder(new DeleteProductServlet(productService, viewGenerator)),
+			context.addServlet(
+					new ServletHolder(new DeleteProductServlet(securityService, productService, viewGenerator)),
 					"/products/delete/*");
-			context.addServlet(new ServletHolder(new SaveProductServlet(productService, viewGenerator)),
+			context.addServlet(
+					new ServletHolder(new SaveProductServlet(securityService, productService, viewGenerator)),
 					"/saveproduct");
-			context.addServlet(new ServletHolder(new LoginFormServlet(viewGenerator)), "/loginform");
+			context.addServlet(new ServletHolder(new LoginFormServlet(securityService, viewGenerator)), "/loginform");
 			context.addServlet(new ServletHolder(new LoginServlet(userService, securityService, viewGenerator)),
 					"/login");
+			context.addServlet(new ServletHolder(new LogoutServlet(securityService, viewGenerator)), "/logout");
 
 			context.addFilter(new FilterHolder(new AuthenticationFilter(securityService)), "/*",
 					EnumSet.allOf(DispatcherType.class));

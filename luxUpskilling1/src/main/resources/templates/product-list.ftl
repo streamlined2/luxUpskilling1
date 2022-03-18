@@ -14,6 +14,9 @@ th, td {
 </head>
 <body>
 	<a href=${context}/loginform>Login</a>
+	<#if userRole?length!=0>
+		<a href=${context}/logout>Logout</a>
+	</#if>
 	<table>
 		<caption>
 			<h3>Products by name</h3>
@@ -31,13 +34,17 @@ th, td {
 					<td>${product.name()}</td>
 					<td>${product.price()}</td>
 					<td>${product.creationDate()}</td>
-					<td><a href=${context}/product/edit/${product.id()}>Edit</a></td>
-					<td><a href=${context}/product/delete/${product.id()}>Delete</a></td>
+					<#if userRole=="ADMIN">
+						<td><a href=${context}/product/edit/${product.id()}>Edit</a></td>
+						<td><a href=${context}/product/delete/${product.id()}>Delete</a></td>
+					</#if>
 				</tr>
             </#list>
 		</tbody>
 	</table>
 	<br>
-	<a href=${context}/product/add>Create new</a>
+	<#if userRole=="ADMIN">
+		<a href=${context}/product/add>Create new</a>
+	</#if>
 </body>
 </html>

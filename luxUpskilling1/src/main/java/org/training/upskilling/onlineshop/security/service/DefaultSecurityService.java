@@ -17,12 +17,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DefaultSecurityService implements SecurityService {
 
-	private static final Map<String, Role> PROTECTED_RESOURCES = Map.of(
-			"/product/add", Role.ADMIN,
-			"/product/edit", Role.ADMIN, 
-			"/product/delete", Role.ADMIN, 
-			"/saveproduct", Role.ADMIN,  
-			"/product/cart/add", Role.USER,
+	private static final String NO_USER_ROLE = "";
+	private static final Map<String, Role> PROTECTED_RESOURCES = Map.of("/product/add", Role.ADMIN, "/product/edit",
+			Role.ADMIN, "/product/delete", Role.ADMIN, "/saveproduct", Role.ADMIN, "/product/cart/add", Role.USER,
 			"/product/cart/delete", Role.USER);
 
 	private final Map<Token, Session> sessions = new ConcurrentHashMap<>();
@@ -76,6 +73,21 @@ public class DefaultSecurityService implements SecurityService {
 	public boolean isValidUser(Optional<UserDto> user, String password) {
 		return user.map(validUser -> passwordEncoder.matches(validUser.encodedPassword(), password, validUser.salt()))
 				.orElse(false);
+	}
+
+	@Override
+	public String getUserRoleName(Optional<String> tokenCookieValue) {
+		return tokenCookieValue.map(tokenValue -> checkSessionAndGetRoleName(tokenConverter.parse(tokenValue)))
+				.orElse(NO_USER_ROLE);
+	}
+
+	private String checkSessionAndGetRoleName(Token token) {
+		Session session = sessions.get(token);
+		if (session == null || !isValid(session)) {
+			return NO_USER_ROLE;
+		}
+		Role role = Role.getRole(session.getUser().role());
+		return role.name();
 	}
 
 }

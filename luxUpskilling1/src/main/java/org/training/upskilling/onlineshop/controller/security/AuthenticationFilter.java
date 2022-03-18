@@ -28,7 +28,7 @@ public class AuthenticationFilter implements Filter {
 				getTokenCookieValue(req.getCookies()))) {
 			chain.doFilter(request, response);
 		} else {
-			request.setAttribute(AbstractServlet.TARGET_URL_ATTRIBUTE, getRequestURL(req));
+			request.setAttribute(AbstractServlet.TARGET_URL_ATTRIBUTE, AbstractServlet.getRequestURL(req));
 			request.getRequestDispatcher("/loginform").forward(request, response);
 		}
 	}
@@ -37,16 +37,6 @@ public class AuthenticationFilter implements Filter {
 		return cookies == null ? Optional.empty()
 				: Arrays.stream(cookies).filter(cookie -> USER_TOKEN_COOKIE_NAME.equals(cookie.getName())).findFirst()
 						.map(Cookie::getValue);
-	}
-
-	private String getRequestURL(HttpServletRequest req) {
-		StringBuilder buf = new StringBuilder(req.getServletPath());
-		buf.append(req.getPathInfo());
-		String query = req.getQueryString();
-		if (query != null) {
-			buf.append(query);
-		}
-		return buf.toString();
 	}
 
 }

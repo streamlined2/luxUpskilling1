@@ -5,24 +5,33 @@ import org.training.upskilling.onlineshop.security.service.SecurityService;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class LoginFormServlet extends AbstractServlet {
-	
-	public LoginFormServlet(SecurityService securityService, ViewGenerator viewGenerator) {
-		super(securityService, viewGenerator, false);
+public class LogoutServlet extends AbstractServlet {
+
+	private static final String NO_USER_TOKEN_COOKIE_VALUE = "";
+
+	public LogoutServlet(SecurityService securityService, ViewGenerator viewGenerator) {
+		super(securityService, viewGenerator, true);
 	}
 
 	@Override
 	protected boolean doWork(HttpServletRequest req, HttpServletResponse resp) throws ServletException {
-		setTargetVariable(req);
+		removeUserTokenCookie(resp);
 		return true;
+	}
+
+	private void removeUserTokenCookie(HttpServletResponse resp) {
+		Cookie cookie = new Cookie(USER_TOKEN_COOKIE_NAME, NO_USER_TOKEN_COOKIE_VALUE);
+		cookie.setMaxAge(0);
+		resp.addCookie(cookie);
 	}
 
 	@Override
 	protected String getDestination(HttpServletRequest req, boolean success) throws ServletException {
-		return "login.ftl";
+		return HOME_URL;
 	}
 
 }

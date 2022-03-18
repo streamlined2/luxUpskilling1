@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import org.training.upskilling.onlineshop.security.service.SecurityService;
 import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.service.dto.ProductDto;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
@@ -14,8 +15,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class SaveProductServlet extends ProductServlet {
 
-	public SaveProductServlet(ProductService productService, ViewGenerator viewGenerator) {
-		super(productService, viewGenerator, true);
+	public SaveProductServlet(SecurityService securityService, ProductService productService, ViewGenerator viewGenerator) {
+		super(securityService, productService, viewGenerator, true);
 	}
 
 	@Override

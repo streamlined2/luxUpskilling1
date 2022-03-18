@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class LoginServlet extends AbstractServlet {
 
+	private static final String HOME_URL = "/";
 	private static final String USER_NAME_PARAMETER = "name";
 	private static final String PASSWORD_PARAMETER = "password";
 
@@ -22,7 +23,7 @@ public class LoginServlet extends AbstractServlet {
 	private final SecurityService securityService;
 
 	public LoginServlet(UserService userService, SecurityService securityService, ViewGenerator viewGenerator) {
-		super(viewGenerator, true);
+		super(securityService, viewGenerator, true);
 		this.userService = userService;
 		this.securityService = securityService;
 	}
@@ -32,7 +33,7 @@ public class LoginServlet extends AbstractServlet {
 		String userName = getRequestParameter(req, USER_NAME_PARAMETER, "missing user name parameter");
 		String password = getRequestParameter(req, PASSWORD_PARAMETER, "missing password parameter");
 		Optional<UserDto> user = userService.findUserByName(userName);
-		if (user.isPresent() && securityService.isValidUser(user, password)) {
+		if (securityService.isValidUser(user, password)) {
 			setNewToken(resp, user.get());
 			return true;
 		}
@@ -48,7 +49,7 @@ public class LoginServlet extends AbstractServlet {
 		if (success) {
 			return getRequestParameter(req, TARGET_URL_ATTRIBUTE, "missing target url parameter");
 		}
-		return "/";
+		return HOME_URL;
 	}
 
 }
