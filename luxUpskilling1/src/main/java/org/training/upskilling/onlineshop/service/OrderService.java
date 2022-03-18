@@ -4,6 +4,8 @@ import org.training.upskilling.onlineshop.service.dto.UserDto;
 
 public interface OrderService {
 	
-	void addOrder(UserDto user);
-
+	void createOrder(UserDto user);
+	void orderProduct(long productId, int count);
+	void declineProduct(long productId, int count);
+	
 }

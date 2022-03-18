@@ -38,6 +38,10 @@ th, td {
 						<td><a href=${context}/product/edit/${product.id()}>Edit</a></td>
 						<td><a href=${context}/product/delete/${product.id()}>Delete</a></td>
 					</#if>
+					<#if userRole=="USER">
+						<td><a href=${context}/product/cart/add/${product.id()}>Order</a></td>
+						<td><a href=${context}/product/cart/delete/${product.id()}>Decline</a></td>
+					</#if>
 				</tr>
             </#list>
 		</tbody>

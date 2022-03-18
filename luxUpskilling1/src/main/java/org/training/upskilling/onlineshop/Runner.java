@@ -6,7 +6,9 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.training.upskilling.onlineshop.controller.product.AddProductToOrderServlet;
 import org.training.upskilling.onlineshop.controller.product.CreateProductServlet;
+import org.training.upskilling.onlineshop.controller.product.DeleteProductFromOrderServlet;
 import org.training.upskilling.onlineshop.controller.product.DeleteProductServlet;
 import org.training.upskilling.onlineshop.controller.product.ListAllProductsServlet;
 import org.training.upskilling.onlineshop.controller.product.ModifyProductServlet;
@@ -46,13 +48,13 @@ public class Runner {
 		try (var propertyReader = new EnvironmentPropertyReader();
 				var connectionFactory = JdbcConnectionFactory.getConnectionFactory(propertyReader)) {
 
-			var orderService = new DefaultOrderService();
-
 			var productService = new DefaultProductService(
 					new ProductJdbcDao(connectionFactory, new ProductJdbcHelper()), new ProductMapper());
 
 			var userService = new DefaultUserService(new UserJdbcDao(connectionFactory, new UserJdbcHelper()),
 					new UserMapper());
+
+			var orderService = new DefaultOrderService(productService);
 
 			var viewGenerator = new ViewGenerator();
 
@@ -80,6 +82,12 @@ public class Runner {
 			context.addServlet(
 					new ServletHolder(new SaveProductServlet(securityService, productService, viewGenerator)),
 					"/saveproduct");
+			context.addServlet(
+					new ServletHolder(new AddProductToOrderServlet(securityService, orderService, productService, viewGenerator)),
+					"/product/cart/add/*");
+			context.addServlet(
+					new ServletHolder(new DeleteProductFromOrderServlet(securityService, orderService, productService, viewGenerator)),
+					"/product/cart/delete/*");
 			context.addServlet(new ServletHolder(new LoginFormServlet(securityService, viewGenerator)), "/loginform");
 			context.addServlet(new ServletHolder(new LoginServlet(userService, securityService, viewGenerator)),
 					"/login");
