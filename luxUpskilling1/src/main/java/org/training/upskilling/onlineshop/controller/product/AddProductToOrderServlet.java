@@ -10,10 +10,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class AddProductToOrderServlet extends ProductServlet {
-	
+
 	private final OrderService orderService;
-	
-	public AddProductToOrderServlet(SecurityService securityService, OrderService orderService, ProductService productService, ViewGenerator viewGenerator) {
+
+	public AddProductToOrderServlet(SecurityService securityService, OrderService orderService,
+			ProductService productService, ViewGenerator viewGenerator) {
 		super(securityService, productService, viewGenerator, true);
 		this.orderService = orderService;
 	}

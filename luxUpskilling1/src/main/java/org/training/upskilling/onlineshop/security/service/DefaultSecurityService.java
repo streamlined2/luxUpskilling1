@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.training.upskilling.onlineshop.model.User.Role;
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
 import org.training.upskilling.onlineshop.security.session.Session;
@@ -30,7 +29,7 @@ public class DefaultSecurityService implements SecurityService {
 
 	@Override
 	public boolean hasAccess(String context, String requestURI, Optional<String> tokenCookieValue) {
-		return !isProtectedResource(context, requestURI) || tokenGrantsAccess(requestURI, tokenCookieValue);
+		return !isProtectedResource(context, requestURI) || tokenGrantsAccess(context, requestURI, tokenCookieValue);
 	}
 
 	private boolean isProtectedResource(String context, String resource) {
@@ -38,19 +37,24 @@ public class DefaultSecurityService implements SecurityService {
 				.regionMatches(context.length(), protectedResource, 0, protectedResource.length()));
 	}
 
-	private boolean tokenGrantsAccess(String requestURI, Optional<String> tokenCookieValue) {
-		return tokenCookieValue.map(tokenValue -> isAccessGranted(tokenConverter.parse(tokenValue), requestURI))
+	private boolean tokenGrantsAccess(String context, String requestURI, Optional<String> tokenCookieValue) {
+		return tokenCookieValue
+				.map(tokenValue -> isAccessGranted(tokenConverter.parse(tokenValue), context, requestURI))
 				.orElse(false);
 	}
 
-	private boolean isAccessGranted(Token token, String resource) {
+	private boolean isAccessGranted(Token token, String context, String resource) {
 		Session session = sessions.get(token);
 		if (session == null || !isValid(session)) {
 			return false;
 		}
 		Role role = Role.getRole(session.getUser().role());
-		return PROTECTED_RESOURCES.entrySet().stream()
-				.anyMatch(entry -> entry.getValue().equals(role) && resource.startsWith(entry.getKey()));
+		return isRoleMatchesProtectedResource(role, context, resource);
+	}
+
+	private boolean isRoleMatchesProtectedResource(Role role, String context, String resource) {
+		return PROTECTED_RESOURCES.entrySet().stream().anyMatch(entry -> entry.getValue().equals(role)
+				&& resource.regionMatches(context.length(), entry.getKey(), 0, entry.getKey().length()));
 	}
 
 	private boolean isValid(Session session) {

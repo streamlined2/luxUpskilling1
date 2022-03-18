@@ -13,9 +13,10 @@ th, td {
 </style>
 </head>
 <body>
-	<a href=${context}/loginform>Login</a>
 	<#if userRole?length!=0>
 		<a href=${context}/logout>Logout</a>
+	<#else>
+		<a href=${context}/loginform>Login</a>
 	</#if>
 	<table>
 		<caption>

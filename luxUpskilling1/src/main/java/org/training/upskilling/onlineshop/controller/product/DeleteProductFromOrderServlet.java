@@ -12,9 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public class DeleteProductFromOrderServlet extends ProductServlet {
 
 	private final OrderService orderService;
-	
-	public DeleteProductFromOrderServlet(SecurityService securityService, OrderService orderService, ProductService productService,
-			ViewGenerator viewGenerator) {
+
+	public DeleteProductFromOrderServlet(SecurityService securityService, OrderService orderService,
+			ProductService productService, ViewGenerator viewGenerator) {
 		super(securityService, productService, viewGenerator, true);
 		this.orderService = orderService;
 	}
