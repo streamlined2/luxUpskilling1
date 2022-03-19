@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.training.upskilling.onlineshop.model.User.Role;
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
 import org.training.upskilling.onlineshop.security.session.Session;
@@ -11,22 +14,31 @@ import org.training.upskilling.onlineshop.security.token.Token;
 import org.training.upskilling.onlineshop.security.token.TokenConverter;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class DefaultSecurityService implements SecurityService {
 
 	private static final Map<String, Role> PROTECTED_RESOURCES = Map.of("/product/add", Role.ADMIN, "/product/edit",
 			Role.ADMIN, "/product/delete", Role.ADMIN, "/saveproduct", Role.ADMIN, "/product/cart/add", Role.USER,
 			"/product/cart/delete", Role.USER);
 	private static final String NO_USER_ROLE = "";
-	
-	private final Map<Token, Session> sessions = new ConcurrentHashMap<>();
+
+	private final Map<Token, Session> sessions;
+	private final ExecutorService cleaner;
 
 	private final PasswordEncoder passwordEncoder;
 	private final TokenConverter tokenConverter;
 	private final int tokenLifeTime;
 	private final int tokenExtraTime;
+
+	public DefaultSecurityService(PasswordEncoder passwordEncoder, TokenConverter tokenConverter, int tokenLifeTime,
+			int tokenExtraTime) {
+		this.passwordEncoder = passwordEncoder;
+		this.tokenConverter = tokenConverter;
+		this.tokenLifeTime = tokenLifeTime;
+		this.tokenExtraTime = tokenExtraTime;
+		sessions = new ConcurrentHashMap<>();
+		cleaner = Executors.newSingleThreadExecutor();
+		cleaner.submit(new Cleaner());
+	}
 
 	@Override
 	public boolean hasAccess(String context, String requestURI, Optional<String> tokenCookieValue) {
@@ -120,6 +132,19 @@ public class DefaultSecurityService implements SecurityService {
 			return Optional.empty();
 		}
 		return Optional.of(session.getUser());
+	}
+
+	private class Cleaner implements Runnable {
+
+		@Override
+		public void run() {
+			for (var i = sessions.entrySet().iterator(); !i.hasNext();) {
+				if (!isValid(i.next().getValue())) {
+					i.remove();
+				}
+			}
+		}
+
 	}
 
 }
