@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.training.upskilling.onlineshop.controller.AbstractServlet;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
+import org.training.upskilling.onlineshop.service.OrderService;
 import org.training.upskilling.onlineshop.service.UserService;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
@@ -21,11 +22,14 @@ public class LoginServlet extends AbstractServlet {
 
 	private final UserService userService;
 	private final SecurityService securityService;
+	private final OrderService orderService;
 
-	public LoginServlet(UserService userService, SecurityService securityService, ViewGenerator viewGenerator) {
+	public LoginServlet(UserService userService, SecurityService securityService, OrderService orderService,
+			ViewGenerator viewGenerator) {
 		super(securityService, viewGenerator, true);
 		this.userService = userService;
 		this.securityService = securityService;
+		this.orderService = orderService;
 	}
 
 	@Override
@@ -34,14 +38,19 @@ public class LoginServlet extends AbstractServlet {
 		String password = getRequestParameter(req, PASSWORD_PARAMETER, "missing password parameter");
 		Optional<UserDto> user = userService.findUserByName(userName);
 		if (securityService.isValidUser(user, password)) {
-			setNewToken(resp, user.get());
+			UserDto userDto = user.get();
+			setNewToken(resp, userDto);
+			orderService.createOrder(userDto);
+			clearCartAttribute();
 			return true;
 		}
 		return false;
 	}
 
 	private void setNewToken(HttpServletResponse resp, UserDto user) {
-		resp.addCookie(new Cookie(USER_TOKEN_COOKIE_NAME, securityService.getNewTokenValue(user)));
+		Cookie tokenCookie = new Cookie(USER_TOKEN_COOKIE_NAME, securityService.getNewTokenValue(user));
+		tokenCookie.setMaxAge(-1);
+		resp.addCookie(tokenCookie);
 	}
 
 	@Override

@@ -48,6 +48,9 @@ th, td {
 		</tbody>
 	</table>
 	<br>
+	<#if userRole=="USER">
+		${cart!"Void order"}
+	</#if>
 	<#if userRole=="ADMIN">
 		<a href=${context}/product/add>Create new</a>
 	</#if>

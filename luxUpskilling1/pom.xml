@@ -132,7 +132,7 @@
 					<appName>${heroku.appName}</appName>
 					<jdkVersion>${maven.compiler.source}</jdkVersion>
 					<processTypes>
-						<web>java $JAVA_OPTS -Dport=$PORT -Durl=$JDBC_DATABASE_URL -Duser=$JDBC_DATABASE_USERNAME -Dpassword=$JDBC_DATABASE_PASSWORD -DminIdle=10 -DmaxIdle=20 -DmaxOpenPreparedStatements=50 -DtokenLifeTime=900 -jar target/luxUpskilling1.jar</web>
+						<web>java $JAVA_OPTS -Dport=$PORT -Durl=$JDBC_DATABASE_URL -Duser=$JDBC_DATABASE_USERNAME -Dpassword=$JDBC_DATABASE_PASSWORD -DminIdle=10 -DmaxIdle=20 -DmaxOpenPreparedStatements=50 -DtokenLifeTime=1000 -DtokenExtraTime=500 -jar target/luxUpskilling1.jar</web>
 					</processTypes>
 				</configuration>
 			</plugin>

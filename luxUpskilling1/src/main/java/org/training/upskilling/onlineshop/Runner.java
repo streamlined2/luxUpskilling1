@@ -25,6 +25,7 @@ import org.training.upskilling.onlineshop.dao.jdbc.user.UserJdbcHelper;
 import org.training.upskilling.onlineshop.propertiesreader.EnvironmentPropertyReader;
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
 import org.training.upskilling.onlineshop.security.service.DefaultSecurityService;
+import org.training.upskilling.onlineshop.security.session.SessionLifeTimeFilter;
 import org.training.upskilling.onlineshop.security.token.TokenConverter;
 import org.training.upskilling.onlineshop.service.DefaultOrderService;
 import org.training.upskilling.onlineshop.service.DefaultProductService;
@@ -42,6 +43,7 @@ public class Runner {
 	private static final String CONTEXT = "/onlineshop";
 	private static final String SERVER_PORT = "port";
 	private static final String TOKEN_LIFE_TIME = "tokenLifeTime";
+	private static final String TOKEN_EXTRA_LIFE_TIME = "tokenExtraTime";
 
 	public static void main(String[] args) {
 
@@ -59,7 +61,8 @@ public class Runner {
 			var viewGenerator = new ViewGenerator();
 
 			var securityService = new DefaultSecurityService(new PasswordEncoder(), new TokenConverter(),
-					propertyReader.getIntegerProperty(TOKEN_LIFE_TIME));
+					propertyReader.getIntegerProperty(TOKEN_LIFE_TIME),
+					propertyReader.getIntegerProperty(TOKEN_EXTRA_LIFE_TIME));
 
 			var server = new Server(Integer.parseInt(propertyReader.getProperty(SERVER_PORT)));
 
@@ -83,17 +86,21 @@ public class Runner {
 					new ServletHolder(new SaveProductServlet(securityService, productService, viewGenerator)),
 					"/saveproduct");
 			context.addServlet(
-					new ServletHolder(new AddProductToOrderServlet(securityService, orderService, productService, viewGenerator)),
+					new ServletHolder(
+							new AddProductToOrderServlet(securityService, orderService, productService, viewGenerator)),
 					"/product/cart/add/*");
-			context.addServlet(
-					new ServletHolder(new DeleteProductFromOrderServlet(securityService, orderService, productService, viewGenerator)),
+			context.addServlet(new ServletHolder(
+					new DeleteProductFromOrderServlet(securityService, orderService, productService, viewGenerator)),
 					"/product/cart/delete/*");
 			context.addServlet(new ServletHolder(new LoginFormServlet(securityService, viewGenerator)), "/loginform");
-			context.addServlet(new ServletHolder(new LoginServlet(userService, securityService, viewGenerator)),
+			context.addServlet(
+					new ServletHolder(new LoginServlet(userService, securityService, orderService, viewGenerator)),
 					"/login");
 			context.addServlet(new ServletHolder(new LogoutServlet(securityService, viewGenerator)), "/logout");
 
 			context.addFilter(new FilterHolder(new AuthenticationFilter(securityService)), "/*",
+					EnumSet.allOf(DispatcherType.class));
+			context.addFilter(new FilterHolder(new SessionLifeTimeFilter(securityService)), "/*",
 					EnumSet.allOf(DispatcherType.class));
 
 			server.setHandler(context);

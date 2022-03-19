@@ -17,11 +17,13 @@ public abstract class ProductServlet extends AbstractServlet {
 	protected static final String PRODUCT_NAME_PARAMETER = "name";
 	protected static final String PRODUCT_PRICE_PARAMETER = "price";
 	protected static final String PRODUCT_CREATION_DATE_PARAMETER = "creationDate";
+	protected static final String EMPTY_ORDER_MESSAGE = "Void order";
 
 	protected final ProductService productService;
 
 	protected ProductServlet(SecurityService securityService, ProductService productService, ViewGenerator viewGenerator) {
-		this(securityService, productService, viewGenerator, false);
+		super(securityService, viewGenerator, false);
+		this.productService = productService;
 	}
 
 	protected ProductServlet(SecurityService securityService, ProductService productService, ViewGenerator viewGenerator, boolean modifying) {
@@ -45,5 +47,5 @@ public abstract class ProductServlet extends AbstractServlet {
 	protected Long getProductIdFromRequest(HttpServletRequest req) throws ServletException {
 		return Long.valueOf(getRequestParameter(req, PRODUCT_ID_PARAMETER, "missing entity id parameter"));
 	}
-
+	
 }

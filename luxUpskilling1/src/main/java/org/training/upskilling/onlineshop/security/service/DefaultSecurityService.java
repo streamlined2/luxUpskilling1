@@ -16,16 +16,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DefaultSecurityService implements SecurityService {
 
-	private static final String NO_USER_ROLE = "";
 	private static final Map<String, Role> PROTECTED_RESOURCES = Map.of("/product/add", Role.ADMIN, "/product/edit",
 			Role.ADMIN, "/product/delete", Role.ADMIN, "/saveproduct", Role.ADMIN, "/product/cart/add", Role.USER,
 			"/product/cart/delete", Role.USER);
-
+	private static final String NO_USER_ROLE = "";
+	
 	private final Map<Token, Session> sessions = new ConcurrentHashMap<>();
 
 	private final PasswordEncoder passwordEncoder;
 	private final TokenConverter tokenConverter;
 	private final int tokenLifeTime;
+	private final int tokenExtraTime;
 
 	@Override
 	public boolean hasAccess(String context, String requestURI, Optional<String> tokenCookieValue) {
@@ -44,21 +45,29 @@ public class DefaultSecurityService implements SecurityService {
 	}
 
 	private boolean isAccessGranted(Token token, String context, String resource) {
-		Session session = sessions.get(token);
-		if (session == null || !isValid(session)) {
+		Optional<Session> session = getSession(token);
+		if (session.isEmpty()) {
 			return false;
 		}
-		Role role = Role.getRole(session.getUser().role());
+		Role role = Role.getRole(session.get().getUser().role());
 		return isRoleMatchesProtectedResource(role, context, resource);
+	}
+
+	private Optional<Session> getSession(Token token) {
+		Session session = sessions.get(token);
+		if (session == null || !isValid(session)) {
+			return Optional.empty();
+		}
+		return Optional.of(session);
+	}
+
+	private boolean isValid(Session session) {
+		return session.getExpirationTime().isAfter(LocalDateTime.now());
 	}
 
 	private boolean isRoleMatchesProtectedResource(Role role, String context, String resource) {
 		return PROTECTED_RESOURCES.entrySet().stream().anyMatch(entry -> entry.getValue().equals(role)
 				&& resource.regionMatches(context.length(), entry.getKey(), 0, entry.getKey().length()));
-	}
-
-	private boolean isValid(Session session) {
-		return session.getExpirationTime().isAfter(LocalDateTime.now());
 	}
 
 	@Override
@@ -92,6 +101,25 @@ public class DefaultSecurityService implements SecurityService {
 		}
 		Role role = Role.getRole(session.getUser().role());
 		return role.name();
+	}
+
+	@Override
+	public void prolongSession(Optional<String> tokenCookieValue) {
+		Optional<Session> session = tokenCookieValue.map(tokenConverter::parse).flatMap(this::getSession);
+		session.ifPresent(s -> s.prolongExpirationTime(tokenExtraTime));
+	}
+
+	@Override
+	public Optional<UserDto> getUser(Optional<String> tokenCookieValue) {
+		return tokenCookieValue.flatMap(tokenValue -> checkSessionAndGetUser(tokenConverter.parse(tokenValue)));
+	}
+
+	private Optional<UserDto> checkSessionAndGetUser(Token token) {
+		Session session = sessions.get(token);
+		if (session == null || !isValid(session)) {
+			return Optional.empty();
+		}
+		return Optional.of(session.getUser());
 	}
 
 }

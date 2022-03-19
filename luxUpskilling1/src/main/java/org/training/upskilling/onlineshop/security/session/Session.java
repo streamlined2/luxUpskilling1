@@ -23,7 +23,9 @@ public class Session {
 	}
 	
 	public void prolongExpirationTime(long seconds) {
-		expirationTime = expirationTime.plusSeconds(seconds);
+		if(expirationTime.isBefore(LocalDateTime.now().plusSeconds(seconds))) {
+			expirationTime = expirationTime.plusSeconds(seconds);
+		}
 	}
 	
 	public void invalidate() {

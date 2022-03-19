@@ -12,9 +12,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class DefaultOrderService implements OrderService {
-	
+
 	private final ProductService productService;
-	
+
 	private final Deque<Order> orders = new ConcurrentLinkedDeque<>();
 
 	@Override
@@ -23,27 +23,33 @@ public class DefaultOrderService implements OrderService {
 	}
 
 	@Override
-	public void orderProduct(long productId, int count) {
-		Order order = orders.removeLast();
-		if(order != null) {
-			Optional<ProductDto> product = productService.findById(productId);
-			if(product.isPresent()) {
-				order.add(product.get(), count);
-				orders.addLast(order);
-			}
+	public void orderProduct(UserDto user, long productId, int count) {
+		Optional<ProductDto> product = productService.findById(productId);
+		Optional<Order> order = getActiveOrder(user);
+		if (product.isPresent() && order.isPresent()) {
+			order.get().add(product.get(), count);
 		}
 	}
 
 	@Override
-	public void declineProduct(long productId, int count) {
-		Order order = orders.removeLast();
-		if(order != null) {
-			Optional<ProductDto> product = productService.findById(productId);
-			if(product.isPresent()) {
-				order.subtract(product.get(), count);
-				orders.addLast(order);
+	public void declineProduct(UserDto user, long productId, int count) {
+		Optional<ProductDto> product = productService.findById(productId);
+		Optional<Order> order = getActiveOrder(user);
+		if (product.isPresent() && order.isPresent()) {
+			order.get().subtract(product.get(), count);
+		}
+	}
+
+	@Override
+	public Optional<Order> getActiveOrder(UserDto user) {
+		var i = orders.descendingIterator();
+		while(i.hasNext()) {
+			var order = i.next();
+			if(order.getUser().equals(user)) {
+				return Optional.of(order);
 			}
 		}
+		return Optional.empty();
 	}
 
 }

@@ -8,7 +8,9 @@ public interface SecurityService {
 	
 	String getNewTokenValue(UserDto user);
 	String getUserRoleName(Optional<String> tokenCookieValue);
+	Optional<UserDto> getUser(Optional<String> tokenCookieValue);
 	boolean isValidUser(Optional<UserDto> user, String password);
 	boolean hasAccess(String context, String resource, Optional<String> tokenCookieValue);
+	void prolongSession(Optional<String> tokenCookieValue);
 
 }

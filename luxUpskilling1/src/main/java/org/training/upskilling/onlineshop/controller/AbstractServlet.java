@@ -23,6 +23,7 @@ public abstract class AbstractServlet extends HttpServlet {
 	public static final String USER_TOKEN_COOKIE_NAME = "user-token";
 	protected static final String HOME_URL = "/";
 	protected static final String CONTEXT_PATH_ATTRIBUTE = "context";
+	protected static final String CART_ATTRIBUTE = "cart";
 	private static final String USER_ROLE_ATTRIBUTE = "userRole";
 	private static final String TEMPLATE_VARIABLES_ATTRIBUTE = "parameters";
 	
@@ -116,6 +117,10 @@ public abstract class AbstractServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		processRequest(req, resp);
+	}
+
+	protected void clearCartAttribute() {
+		setTemplateVariable(CART_ATTRIBUTE, "");
 	}
 
 }
