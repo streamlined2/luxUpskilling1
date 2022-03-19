@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.model.User.Role;
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
 import org.training.upskilling.onlineshop.security.session.Session;
@@ -24,15 +25,12 @@ public class DefaultSecurityService implements SecurityService {
 	private final Map<Token, Session> sessions;
 	private final ExecutorService cleaner;
 
-	private final PasswordEncoder passwordEncoder;
-	private final TokenConverter tokenConverter;
+	private final PasswordEncoder passwordEncoder = ServiceLocator.getInstance(PasswordEncoder.class);
+	private final TokenConverter tokenConverter = ServiceLocator.getInstance(TokenConverter.class);
 	private final int tokenLifeTime;
 	private final int tokenExtraTime;
 
-	public DefaultSecurityService(PasswordEncoder passwordEncoder, TokenConverter tokenConverter, int tokenLifeTime,
-			int tokenExtraTime) {
-		this.passwordEncoder = passwordEncoder;
-		this.tokenConverter = tokenConverter;
+	public DefaultSecurityService(int tokenLifeTime, int tokenExtraTime) {
 		this.tokenLifeTime = tokenLifeTime;
 		this.tokenExtraTime = tokenExtraTime;
 		sessions = new ConcurrentHashMap<>();

@@ -5,6 +5,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Yet another online shop for one product</name>
 	<description>Simple online shop implemented with Java servlets</description>
+	<packaging>war</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -154,6 +155,18 @@
 					<schemas>
 						<schema>yaos</schema>
 					</schemas>
+				</configuration>
+			</plugin>
+
+			<plugin>
+			    <groupId>org.eclipse.jetty</groupId>
+			    <artifactId>jetty-maven-plugin</artifactId>
+			    <version>11.0.8</version>
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webApp>
+						<contextPath>/onlineshop</contextPath>
+					</webApp>
 				</configuration>
 			</plugin>
 

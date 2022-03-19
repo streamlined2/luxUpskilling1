@@ -2,13 +2,12 @@ package org.training.upskilling.onlineshop.controller.security;
 
 import java.util.Optional;
 
+import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.controller.AbstractServlet;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
 import org.training.upskilling.onlineshop.service.OrderService;
 import org.training.upskilling.onlineshop.service.UserService;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
-import org.training.upskilling.onlineshop.view.ViewGenerator;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,16 +19,12 @@ public class LoginServlet extends AbstractServlet {
 	private static final String USER_NAME_PARAMETER = "name";
 	private static final String PASSWORD_PARAMETER = "password";
 
-	private final UserService userService;
-	private final SecurityService securityService;
-	private final OrderService orderService;
+	private final UserService userService = ServiceLocator.getInstance(UserService.class);
+	private final SecurityService securityService = ServiceLocator.getInstance(SecurityService.class);
+	private final OrderService orderService = ServiceLocator.getInstance(OrderService.class);
 
-	public LoginServlet(UserService userService, SecurityService securityService, OrderService orderService,
-			ViewGenerator viewGenerator) {
-		super(securityService, viewGenerator, true);
-		this.userService = userService;
-		this.securityService = securityService;
-		this.orderService = orderService;
+	public LoginServlet() {
+		super(true);
 	}
 
 	@Override

@@ -1,10 +1,8 @@
 package org.training.upskilling.onlineshop.controller.product;
 
+import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.controller.AbstractServlet;
-import org.training.upskilling.onlineshop.security.service.SecurityService;
 import org.training.upskilling.onlineshop.service.ProductService;
-import org.training.upskilling.onlineshop.view.ViewGenerator;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -19,16 +17,14 @@ public abstract class ProductServlet extends AbstractServlet {
 	protected static final String PRODUCT_CREATION_DATE_PARAMETER = "creationDate";
 	protected static final String EMPTY_ORDER_MESSAGE = "Void order";
 
-	protected final ProductService productService;
+	protected final ProductService productService = ServiceLocator.getInstance(ProductService.class);
 
-	protected ProductServlet(SecurityService securityService, ProductService productService, ViewGenerator viewGenerator) {
-		super(securityService, viewGenerator, false);
-		this.productService = productService;
+	protected ProductServlet() {
+		super(false);
 	}
 
-	protected ProductServlet(SecurityService securityService, ProductService productService, ViewGenerator viewGenerator, boolean modifying) {
-		super(securityService, viewGenerator, modifying);
-		this.productService = productService;
+	protected ProductServlet(boolean modifying) {
+		super(modifying);
 	}
 
 	protected void fetchAllProducts() {

@@ -1,9 +1,6 @@
 package org.training.upskilling.onlineshop.controller.security;
 
 import org.training.upskilling.onlineshop.controller.AbstractServlet;
-import org.training.upskilling.onlineshop.security.service.SecurityService;
-import org.training.upskilling.onlineshop.view.ViewGenerator;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,8 +10,8 @@ public class LogoutServlet extends AbstractServlet {
 
 	private static final String NO_USER_TOKEN_COOKIE_VALUE = "";
 
-	public LogoutServlet(SecurityService securityService, ViewGenerator viewGenerator) {
-		super(securityService, viewGenerator, true);
+	public LogoutServlet() {
+		super(true);
 	}
 
 	@Override

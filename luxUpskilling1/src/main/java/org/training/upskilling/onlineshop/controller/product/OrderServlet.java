@@ -1,19 +1,16 @@
 package org.training.upskilling.onlineshop.controller.product;
 
+import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.controller.order.Order;
-import org.training.upskilling.onlineshop.security.service.SecurityService;
 import org.training.upskilling.onlineshop.service.OrderService;
-import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
-import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 public abstract class OrderServlet extends ProductServlet {
 
-	protected final OrderService orderService;
+	protected final OrderService orderService = ServiceLocator.getInstance(OrderService.class);
 
-	protected OrderServlet(SecurityService securityService, ProductService productService, OrderService orderService, ViewGenerator viewGenerator) {
-		super(securityService, productService, viewGenerator, true);
-		this.orderService = orderService;
+	protected OrderServlet() {
+		super(true);
 	}
 	
 	protected void updateCartAttribute(UserDto user) {

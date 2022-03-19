@@ -3,25 +3,12 @@ package org.training.upskilling.onlineshop.controller.product;
 import java.util.Optional;
 
 import org.training.upskilling.onlineshop.controller.Utilities;
-import org.training.upskilling.onlineshop.security.service.SecurityService;
-import org.training.upskilling.onlineshop.service.OrderService;
-import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
-import org.training.upskilling.onlineshop.view.ViewGenerator;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class DeleteProductFromOrderServlet extends OrderServlet {
-
-	private final OrderService orderService;
-
-	public DeleteProductFromOrderServlet(SecurityService securityService, OrderService orderService,
-			ProductService productService, ViewGenerator viewGenerator) {
-		super(securityService, productService, orderService, viewGenerator);
-		this.orderService = orderService;
-	}
 
 	@Override
 	public boolean doWork(HttpServletRequest req, HttpServletResponse resp) throws ServletException {

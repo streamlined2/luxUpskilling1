@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
 import org.training.upskilling.onlineshop.view.ViewGenerator;
 
@@ -27,8 +28,8 @@ public abstract class AbstractServlet extends HttpServlet {
 	private static final String USER_ROLE_ATTRIBUTE = "userRole";
 	private static final String TEMPLATE_VARIABLES_ATTRIBUTE = "parameters";
 	
-	protected final SecurityService securityService;
-	protected final ViewGenerator viewGenerator;
+	protected final SecurityService securityService = ServiceLocator.getInstance(SecurityService.class);
+	protected final ViewGenerator viewGenerator = ServiceLocator.getInstance(ViewGenerator.class);
 	protected final boolean makeNewRequest;
 
 	protected void processRequest(HttpServletRequest req, HttpServletResponse resp)

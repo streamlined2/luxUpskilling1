@@ -8,14 +8,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.dao.Dao;
 import org.training.upskilling.onlineshop.dao.DataAccessException;
 import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.model.Product;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@RequiredArgsConstructor
 @Slf4j
 public class ProductJdbcDao implements Dao<Product, Long> {
 
@@ -33,8 +33,8 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 	private static final String UPDATE_ENTITY_STATEMENT = String.format("UPDATE %s.%s SET name=?,price=? WHERE id=?",
 			SCHEMA, TABLE_NAME);
 
-	private final JdbcConnectionFactory connectionFactory;
-	private final ProductJdbcHelper helper;
+	private final JdbcConnectionFactory connectionFactory = ServiceLocator.getInstance(JdbcConnectionFactory.class);
+	private final ProductJdbcHelper helper = ServiceLocator.getInstance(ProductJdbcHelper.class);
 
 	@Override
 	public List<Product> getAll() {
