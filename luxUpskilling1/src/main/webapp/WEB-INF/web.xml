@@ -7,122 +7,15 @@
 	<display-name>Yet another online shop</display-name>
 
 	<servlet>
-		<servlet-name>ListAllProducts</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.product.ListAllProductsServlet</servlet-class>
+		<description>Online Shop</description>
+		<servlet-name>onlineShop</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+
 	<servlet-mapping>
-		<servlet-name>ListAllProducts</servlet-name>
+		<servlet-name>onlineShop</servlet-name>
 		<url-pattern>/</url-pattern>
-		<url-pattern>/products</url-pattern>
 	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>CreateProduct</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.product.CreateProductServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>CreateProduct</servlet-name>
-		<url-pattern>/product/add</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>ModifyProduct</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.product.ModifyProductServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ModifyProduct</servlet-name>
-		<url-pattern>/product/edit/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>DeleteProduct</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.product.DeleteProductFromOrderServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>DeleteProduct</servlet-name>
-		<url-pattern>/product/delete/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>SaveProduct</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.product.SaveProductServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>SaveProduct</servlet-name>
-		<url-pattern>/saveproduct</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>AddProductToOrder</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.product.AddProductToOrderServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>AddProductToOrder</servlet-name>
-		<url-pattern>/product/cart/add/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>DeleteProductFromOrder</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.product.DeleteProductFromOrderServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>DeleteProductFromOrder</servlet-name>
-		<url-pattern>/product/cart/delete/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>LoginForm</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.security.LoginFormServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>LoginForm</servlet-name>
-		<url-pattern>/loginform</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>Login</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.security.LoginServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Login</servlet-name>
-		<url-pattern>/login</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>Logout</servlet-name>
-		<servlet-class>org.training.upskilling.onlineshop.controller.security.LogoutServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Logout</servlet-name>
-		<url-pattern>/logout</url-pattern>
-	</servlet-mapping>
-
-	<filter>
-		<filter-name>Authentication</filter-name>
-		<filter-class>org.training.upskilling.onlineshop.controller.security.AuthenticationFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>Authentication</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<filter>
-		<filter-name>SessionLifeTime</filter-name>
-		<filter-class>org.training.upskilling.onlineshop.security.session.SessionLifeTimeFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>SessionLifeTime</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 
 </web-app>
