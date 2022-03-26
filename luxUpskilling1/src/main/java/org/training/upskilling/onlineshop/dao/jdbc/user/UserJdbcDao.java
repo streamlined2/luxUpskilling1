@@ -7,14 +7,16 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
-import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.dao.DataAccessException;
 import org.training.upskilling.onlineshop.dao.UserDao;
 import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.model.User;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 @Repository
 public class UserJdbcDao implements UserDao {
 
@@ -24,8 +26,8 @@ public class UserJdbcDao implements UserDao {
 	private static final String FETCH_ENTITY_BY_NAME_STATEMENT = String
 			.format("SELECT id, name, password, salt, role FROM %s.%s WHERE name=?", SCHEMA, TABLE_NAME);
 
-	private final JdbcConnectionFactory connectionFactory = ServiceLocator.getInstance(JdbcConnectionFactory.class);
-	private final UserJdbcHelper helper = ServiceLocator.getInstance(UserJdbcHelper.class);
+	private final JdbcConnectionFactory connectionFactory;
+	private final UserJdbcHelper userJdbcHelper;
 
 	@Override
 	public Optional<User> findByName(String name) {
@@ -34,7 +36,7 @@ public class UserJdbcDao implements UserDao {
 			statement.setString(1, name);
 			try (ResultSet resultSet = statement.executeQuery()) {
 				if (resultSet.next()) {
-					return Optional.of(helper.toUser(resultSet));
+					return Optional.of(userJdbcHelper.toUser(resultSet));
 				}
 			}
 			return Optional.empty();

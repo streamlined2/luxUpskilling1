@@ -10,14 +10,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
-import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.dao.Dao;
 import org.training.upskilling.onlineshop.dao.DataAccessException;
 import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.model.Product;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 @Repository
 public class ProductJdbcDao implements Dao<Product, Long> {
 
@@ -35,8 +37,8 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 	private static final String UPDATE_ENTITY_STATEMENT = String.format("UPDATE %s.%s SET name=?,price=? WHERE id=?",
 			SCHEMA, TABLE_NAME);
 
-	private final JdbcConnectionFactory connectionFactory = ServiceLocator.getInstance(JdbcConnectionFactory.class);
-	private final ProductJdbcHelper helper = ServiceLocator.getInstance(ProductJdbcHelper.class);
+	private final JdbcConnectionFactory connectionFactory;
+	private final ProductJdbcHelper productJdbcHelper;
 
 	@Override
 	public List<Product> getAll() {
@@ -45,7 +47,7 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 				ResultSet resultSet = statement.executeQuery(FETCH_ALL_STATEMENT)) {
 			List<Product> products = new ArrayList<>();
 			while (resultSet.next()) {
-				products.add(helper.toProduct(resultSet));
+				products.add(productJdbcHelper.toProduct(resultSet));
 			}
 			return products;
 		} catch (SQLException e) {
@@ -61,7 +63,7 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 			statement.setLong(1, id);
 			try (ResultSet resultSet = statement.executeQuery()) {
 				if (resultSet.next()) {
-					return Optional.of(helper.toProduct(resultSet));
+					return Optional.of(productJdbcHelper.toProduct(resultSet));
 				}
 			}
 			return Optional.empty();
@@ -77,7 +79,7 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 			conn.setAutoCommit(false);
 			try (PreparedStatement statement = conn.prepareStatement(INSERT_ENTITY_STATEMENT,
 					Statement.RETURN_GENERATED_KEYS)) {
-				helper.fillInInsertParameters(statement, entity);
+				productJdbcHelper.fillInInsertParameters(statement, entity);
 				int count = statement.executeUpdate();
 				try (ResultSet resultSet = statement.getGeneratedKeys()) {
 					if (count == 1 && resultSet.next()) {
@@ -99,7 +101,7 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 	public void update(Product entity) {
 		try (Connection conn = connectionFactory.getConnection();
 				PreparedStatement statement = conn.prepareStatement(UPDATE_ENTITY_STATEMENT)) {
-			helper.fillInUpdateParameters(statement, entity);
+			productJdbcHelper.fillInUpdateParameters(statement, entity);
 			if (statement.executeUpdate() == 1) {
 				return;
 			}

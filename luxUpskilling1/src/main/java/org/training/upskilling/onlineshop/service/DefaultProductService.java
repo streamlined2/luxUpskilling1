@@ -4,18 +4,19 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.dao.Dao;
-import org.training.upskilling.onlineshop.dao.jdbc.product.ProductJdbcDao;
 import org.training.upskilling.onlineshop.model.Product;
 import org.training.upskilling.onlineshop.service.dto.ProductDto;
 import org.training.upskilling.onlineshop.service.mapper.ProductMapper;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class DefaultProductService implements ProductService {
 
-	private final Dao<Product, Long> productDao = ServiceLocator.getInstance(ProductJdbcDao.class);
-	private final ProductMapper productMapper = ServiceLocator.getInstance(ProductMapper.class);
+	private final Dao<Product, Long> productDao;
+	private final ProductMapper productMapper;
 
 	@Override
 	public void add(ProductDto dto) {

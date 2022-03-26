@@ -1,5 +1,7 @@
 package org.training.upskilling.onlineshop.controller.product;
 
+import static org.training.upskilling.onlineshop.Utilities.getTokenCookieValue;
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
@@ -58,8 +60,9 @@ public class AuthenticationController {
 	}
 	
 	@GetMapping("/logout")
-	public String logout(HttpServletResponse resp) {
-		removeUserTokenCookie(resp);		
+	public String logout(HttpServletRequest req, HttpServletResponse resp) {
+		securityService.invalidateToken(getTokenCookieValue(req.getCookies()));
+		removeUserTokenCookie(resp);
 		return HOME_URL;
 	}
 

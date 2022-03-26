@@ -12,5 +12,6 @@ public interface SecurityService {
 	boolean isValidUser(Optional<UserDto> user, String password);
 	boolean hasAccess(String context, String resource, Optional<String> tokenCookieValue);
 	void prolongSession(Optional<String> tokenCookieValue);
+	void invalidateToken(Optional<String> tokenCookieValue);
 
 }

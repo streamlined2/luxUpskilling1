@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS yaos."user"
     name character varying(20) COLLATE pg_catalog."default" NOT NULL,
     password character varying(100) COLLATE pg_catalog."default" NOT NULL,
     salt character varying (20) COLLATE pg_catalog."default" NOT NULL,
+	role character varying (10) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT user_pkey PRIMARY KEY (id),
     CONSTRAINT unique_user_name UNIQUE (name)
 )

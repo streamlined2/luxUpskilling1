@@ -5,7 +5,6 @@ import static org.training.upskilling.onlineshop.Utilities.getTokenCookieValue;
 
 import java.io.IOException;
 
-import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.controller.product.AuthenticationController;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
 import jakarta.servlet.Filter;
@@ -14,10 +13,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class AuthenticationFilter implements Filter {
 
-	private final SecurityService securityService = ServiceLocator.getInstance(SecurityService.class);
+	private final SecurityService securityService;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
