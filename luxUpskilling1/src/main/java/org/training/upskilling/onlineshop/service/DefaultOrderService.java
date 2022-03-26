@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
+import org.springframework.stereotype.Service;
 import org.training.upskilling.onlineshop.controller.order.Order;
 import org.training.upskilling.onlineshop.service.dto.ProductDto;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
@@ -11,7 +12,10 @@ import org.training.upskilling.onlineshop.service.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Service
 public class DefaultOrderService implements OrderService {
+
+	private static final String EMPTY_ORDER_MESSAGE = "Empty cart";
 
 	private final ProductService productService;
 
@@ -50,6 +54,11 @@ public class DefaultOrderService implements OrderService {
 			}
 		}
 		return Optional.empty();
+	}
+
+	@Override
+	public String getActiveOrderRepresentation(UserDto user) {
+		return getActiveOrder(user).map(Order::toString).orElse(EMPTY_ORDER_MESSAGE);
 	}
 
 }

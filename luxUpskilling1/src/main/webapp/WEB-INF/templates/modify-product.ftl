@@ -31,9 +31,9 @@
 				</tr>
 			</table>
 			<hr>
-			<input type="submit" value="Save" formaction="${context}/saveproduct" formmethod="post" />
+			<input type="submit" value="Save" formaction="${rc.getContextPath()}/saveproduct" formmethod="post" />
 			<input type="reset" value="Reset" />
-			<input type="submit" value="Cancel" formaction="${context}/products" formmethod="get" formnovalidate />
+			<input type="submit" value="Cancel" formaction="${rc.getContextPath()}/products" formmethod="get" formnovalidate />
 		</fieldset>
 	</form>
 </body>

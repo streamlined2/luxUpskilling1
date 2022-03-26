@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.springframework.stereotype.Service;
 import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.model.User.Role;
 import org.training.upskilling.onlineshop.security.PasswordEncoder;
@@ -15,6 +16,7 @@ import org.training.upskilling.onlineshop.security.token.Token;
 import org.training.upskilling.onlineshop.security.token.TokenConverter;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
 
+@Service
 public class DefaultSecurityService implements SecurityService {
 
 	private static final Map<String, Role> PROTECTED_RESOURCES = Map.of("/product/add", Role.ADMIN, "/product/edit",

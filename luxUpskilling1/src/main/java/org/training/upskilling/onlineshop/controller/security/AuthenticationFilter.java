@@ -1,10 +1,12 @@
 package org.training.upskilling.onlineshop.controller.security;
 
+import static org.training.upskilling.onlineshop.Utilities.getRequestURL;
+import static org.training.upskilling.onlineshop.Utilities.getTokenCookieValue;
+
 import java.io.IOException;
 
 import org.training.upskilling.onlineshop.ServiceLocator;
-import org.training.upskilling.onlineshop.controller.AbstractServlet;
-import org.training.upskilling.onlineshop.controller.Utilities;
+import org.training.upskilling.onlineshop.controller.product.AuthenticationController;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -22,10 +24,10 @@ public class AuthenticationFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		if (securityService.hasAccess(req.getContextPath(), req.getRequestURI(),
-				Utilities.getTokenCookieValue(req))) {
+				getTokenCookieValue(req.getCookies()))) {
 			chain.doFilter(request, response);
 		} else {
-			request.setAttribute(AbstractServlet.TARGET_URL_ATTRIBUTE, AbstractServlet.getRequestURL(req));
+			request.setAttribute(AuthenticationController.TARGET_URL_ATTRIBUTE, getRequestURL(req));
 			request.getRequestDispatcher("/loginform").forward(request, response);
 		}
 	}

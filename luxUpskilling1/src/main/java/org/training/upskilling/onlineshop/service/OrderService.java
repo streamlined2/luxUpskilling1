@@ -11,5 +11,6 @@ public interface OrderService {
 	Optional<Order> getActiveOrder(UserDto user);
 	void orderProduct(UserDto user, long productId, int count);
 	void declineProduct(UserDto user, long productId, int count);
+	String getActiveOrderRepresentation(UserDto user);
 	
 }

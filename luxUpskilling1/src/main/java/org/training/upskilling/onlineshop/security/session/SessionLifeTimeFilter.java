@@ -1,9 +1,10 @@
 package org.training.upskilling.onlineshop.security.session;
 
+import static org.training.upskilling.onlineshop.Utilities.getTokenCookieValue;
+
 import java.io.IOException;
 
 import org.training.upskilling.onlineshop.ServiceLocator;
-import org.training.upskilling.onlineshop.controller.Utilities;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
 
 import jakarta.servlet.Filter;
@@ -20,7 +21,7 @@ public class SessionLifeTimeFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-		securityService.prolongSession(Utilities.getTokenCookieValue((HttpServletRequest) request));
+		securityService.prolongSession(getTokenCookieValue(((HttpServletRequest) request).getCookies()));
 		chain.doFilter(request, response);
 	}
 

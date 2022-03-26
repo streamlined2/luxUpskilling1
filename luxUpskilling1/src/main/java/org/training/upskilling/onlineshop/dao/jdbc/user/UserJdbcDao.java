@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import org.springframework.stereotype.Repository;
 import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.dao.DataAccessException;
 import org.training.upskilling.onlineshop.dao.UserDao;
@@ -14,6 +15,7 @@ import org.training.upskilling.onlineshop.model.User;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Repository
 public class UserJdbcDao implements UserDao {
 
 	private static final String SCHEMA = "yaos";

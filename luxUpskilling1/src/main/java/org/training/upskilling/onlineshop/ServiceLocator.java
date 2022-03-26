@@ -21,7 +21,6 @@ import org.training.upskilling.onlineshop.service.ProductService;
 import org.training.upskilling.onlineshop.service.UserService;
 import org.training.upskilling.onlineshop.service.mapper.ProductMapper;
 import org.training.upskilling.onlineshop.service.mapper.UserMapper;
-import org.training.upskilling.onlineshop.view.ViewGenerator;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +57,6 @@ public class ServiceLocator {
 			var orderService = new DefaultOrderService(productService);
 			applicationContext.put(OrderService.class, orderService);
 
-			applicationContext.put(ViewGenerator.class, new ViewGenerator());
 			applicationContext.put(PasswordEncoder.class, new PasswordEncoder());
 			applicationContext.put(TokenConverter.class, new TokenConverter());
 

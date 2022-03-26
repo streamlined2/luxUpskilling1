@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Repository;
 import org.training.upskilling.onlineshop.ServiceLocator;
 import org.training.upskilling.onlineshop.dao.Dao;
 import org.training.upskilling.onlineshop.dao.DataAccessException;
@@ -17,6 +18,7 @@ import org.training.upskilling.onlineshop.model.Product;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Repository
 public class ProductJdbcDao implements Dao<Product, Long> {
 
 	private static final String SCHEMA = "yaos";
