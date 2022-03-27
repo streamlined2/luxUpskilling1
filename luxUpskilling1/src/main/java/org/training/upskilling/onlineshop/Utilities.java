@@ -3,10 +3,11 @@ package org.training.upskilling.onlineshop;
 import java.util.Arrays;
 import java.util.Optional;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+
 import org.training.upskilling.onlineshop.controller.product.AuthenticationController;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

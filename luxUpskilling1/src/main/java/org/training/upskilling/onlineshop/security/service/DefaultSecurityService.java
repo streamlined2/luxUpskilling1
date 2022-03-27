@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.training.upskilling.onlineshop.model.User.Role;
@@ -32,6 +33,7 @@ public class DefaultSecurityService implements SecurityService {
 	private final int tokenLifeTime;
 	private final int tokenExtraTime;
 
+	@Autowired
 	public DefaultSecurityService(PasswordEncoder passwordEncoder, TokenConverter tokenConverter,
 			@Value("${tokenLifeTime}") int tokenLifeTime, @Value("${tokenExtraTime}") int tokenExtraTime) {
 		this.passwordEncoder = passwordEncoder;

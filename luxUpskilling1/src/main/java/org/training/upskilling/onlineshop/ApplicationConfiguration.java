@@ -13,7 +13,7 @@ import org.training.upskilling.onlineshop.service.mapper.ProductMapper;
 import org.training.upskilling.onlineshop.service.mapper.UserMapper;
 
 @Configuration
-@PropertySource("application.properties")
+@PropertySource("classpath:/application.properties")
 public class ApplicationConfiguration {
 	
 	@Bean
@@ -52,5 +52,5 @@ public class ApplicationConfiguration {
 	public UserMapper userMapper() {
 		return new UserMapper();
 	}
-
+	
 }

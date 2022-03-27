@@ -4,6 +4,10 @@ import static org.training.upskilling.onlineshop.Utilities.getTokenCookieValue;
 
 import java.util.Optional;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
@@ -11,9 +15,6 @@ import org.training.upskilling.onlineshop.service.OrderService;
 import org.training.upskilling.onlineshop.service.UserService;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
