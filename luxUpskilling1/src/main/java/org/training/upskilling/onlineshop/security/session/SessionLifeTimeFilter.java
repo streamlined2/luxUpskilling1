@@ -11,17 +11,16 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.training.upskilling.onlineshop.security.service.SecurityService;
 
-import lombok.RequiredArgsConstructor;
-
-@Component
+@Component("sessionLifeTimeFilter")
 @Order(2)
-@RequiredArgsConstructor
 public class SessionLifeTimeFilter implements Filter {
 
+	@Autowired
 	private SecurityService securityService;
 
 	@Override

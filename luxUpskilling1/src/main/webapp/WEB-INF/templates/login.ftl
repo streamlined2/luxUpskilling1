@@ -25,8 +25,7 @@
 			<hr>
 			<input type="submit" value="Login" formaction="${rc.getContextPath()}/login" formmethod="post" />
 			<input type="reset" value="Reset" />
-			<input type="submit" value="Cancel" formaction="${rc.getContextPath()}/products" formmethod="get" formnovalidate />
-			<input type="hidden" id="targetUrl" name="targetUrl" value="${targetUrl}" />
+			<input type="submit" value="Cancel" formaction="${rc.getContextPath()}/products" formmethod="post" formnovalidate />
 		</fieldset>
 	</form>
 </body>

@@ -19,20 +19,20 @@
 	</servlet-mapping>
 
 	<filter>
-		<filter-name>Authentication</filter-name>
-		<filter-class>org.training.upskilling.onlineshop.controller.security.AuthenticationFilter</filter-class>
+		<filter-name>authenticationFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>Authentication</filter-name>
+		<filter-name>authenticationFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	<filter>
-		<filter-name>SessionLifeTime</filter-name>
-		<filter-class>org.training.upskilling.onlineshop.security.session.SessionLifeTimeFilter</filter-class>
+		<filter-name>sessionLifeTimeFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>SessionLifeTime</filter-name>
+		<filter-name>sessionLifeTimeFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 

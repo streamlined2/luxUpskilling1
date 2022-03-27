@@ -18,7 +18,7 @@ th, td {
 			<p>${error}</p>
 		</div>
 	</#if>
-	<#if userRole?length!=0>
+	<#if userRole??>
 		<a href=${rc.getContextPath()}/logout>Logout</a>
 	<#else>
 		<a href=${rc.getContextPath()}/loginform>Login</a>
@@ -40,11 +40,11 @@ th, td {
 					<td>${product.name()}</td>
 					<td>${product.price()}</td>
 					<td>${product.creationDate()}</td>
-					<#if userRole=="ADMIN">
+					<#if (userRole!"")=="ADMIN">
 						<td><a href=${rc.getContextPath()}/product/edit/${product.id()}>Edit</a></td>
 						<td><a href=${rc.getContextPath()}/product/delete/${product.id()}>Delete</a></td>
 					</#if>
-					<#if userRole=="USER">
+					<#if (userRole!"")=="USER">
 						<td><a href=${rc.getContextPath()}/product/cart/add/${product.id()}>Order</a></td>
 						<td><a href=${rc.getContextPath()}/product/cart/delete/${product.id()}>Decline</a></td>
 					</#if>
@@ -53,10 +53,10 @@ th, td {
 		</tbody>
 	</table>
 	<br>
-	<#if userRole=="USER">
-		${cart!"Void order"}
+	<#if (userRole!"")=="USER">
+		${cart!"No order"}
 	</#if>
-	<#if userRole=="ADMIN">
+	<#if (userRole!"")=="ADMIN">
 		<a href=${rc.getContextPath()}/product/add>Create new</a>
 	</#if>
 </body>

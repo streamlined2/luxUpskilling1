@@ -23,7 +23,8 @@ public class ProductController {
 	private final ProductService productService;
 
 	@GetMapping({ "/", "/products" })
-	public String getProducts(Model model) {
+	@PostMapping({ "/", "/products" })
+	public String getAllProductsByGet(Model model) {
 		model.addAttribute(PRODUCTS_ATTRIBUTE, productService.getAll());
 		return "/product-list";
 	}
