@@ -50,14 +50,14 @@ public class Order implements Iterable<Entry<ProductDto, Integer>> {
 
 	@Override
 	public String toString() {
-		return new StringBuilder().append("Order created by ").append(user.name()).append(" on ")
+		return new StringBuilder().append("Order created by ").append(user.getName()).append(" on ")
 				.append(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(creationTime)).append(": ")
 				.append(items.entrySet().stream().map(Order::orderItemToString).collect(Collectors.joining(",", "[", "]")))
 				.toString();
 	}
 	
 	private static String orderItemToString(Entry<ProductDto, Integer> entry) {
-		return new StringBuilder().append(entry.getKey().name()).append(":").append(entry.getValue()).toString();
+		return new StringBuilder().append(entry.getKey().getName()).append(":").append(entry.getValue()).toString();
 	}
 
 }

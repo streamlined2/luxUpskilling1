@@ -10,7 +10,7 @@ public class ProductMapper {
 	}
 
 	public Product toProduct(ProductDto dto) {
-		return Product.builder().id(dto.id()).name(dto.name()).price(dto.price()).creationDate(dto.creationDate())
+		return Product.builder().id(dto.getId()).name(dto.getName()).price(dto.getPrice()).creationDate(dto.getCreationDate())
 				.build();
 	}
 

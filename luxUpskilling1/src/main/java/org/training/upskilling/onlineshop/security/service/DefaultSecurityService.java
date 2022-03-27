@@ -65,7 +65,7 @@ public class DefaultSecurityService implements SecurityService {
 		if (session.isEmpty()) {
 			return false;
 		}
-		Role role = Role.getRole(session.get().getUser().role());
+		Role role = Role.getRole(session.get().getUser().getRole());
 		return isRoleMatchesProtectedResource(role, context, resource);
 	}
 
@@ -100,13 +100,13 @@ public class DefaultSecurityService implements SecurityService {
 
 	@Override
 	public boolean isValidUser(Optional<UserDto> user, String password) {
-		return user.map(validUser -> passwordEncoder.matches(validUser.encodedPassword(), password, validUser.salt()))
+		return user.map(validUser -> passwordEncoder.matches(validUser.getEncodedPassword(), password, validUser.getSalt()))
 				.orElse(false);
 	}
 
 	@Override
 	public String getUserRoleName(UserDto user) {
-		return Role.getRole(user.role()).name();
+		return Role.getRole(user.getRole()).name();
 	}
 
 	@Override

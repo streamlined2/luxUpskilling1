@@ -37,16 +37,16 @@ th, td {
 		<tbody>
             <#list products as product>
 				<tr>
-					<td>${product.name()}</td>
-					<td>${product.price()}</td>
-					<td>${product.creationDate()}</td>
+					<td>${product.name}</td>
+					<td>${product.price}</td>
+					<td>${product.creationDate}</td>
 					<#if (userRole!"")=="ADMIN">
-						<td><a href=${rc.getContextPath()}/product/edit/${product.id()}>Edit</a></td>
-						<td><a href=${rc.getContextPath()}/product/delete/${product.id()}>Delete</a></td>
+						<td><a href=${rc.getContextPath()}/product/edit/${product.id}>Edit</a></td>
+						<td><a href=${rc.getContextPath()}/product/delete/${product.id}>Delete</a></td>
 					</#if>
 					<#if (userRole!"")=="USER">
-						<td><a href=${rc.getContextPath()}/product/cart/add/${product.id()}>Order</a></td>
-						<td><a href=${rc.getContextPath()}/product/cart/delete/${product.id()}>Decline</a></td>
+						<td><a href=${rc.getContextPath()}/product/cart/add/${product.id}>Order</a></td>
+						<td><a href=${rc.getContextPath()}/product/cart/delete/${product.id}>Decline</a></td>
 					</#if>
 				</tr>
             </#list>
