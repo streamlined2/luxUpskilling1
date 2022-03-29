@@ -1,4 +1,4 @@
-package org.training.upskilling.onlineshop.security.session;
+package org.training.upskilling.onlineshop.filter;
 
 import static org.training.upskilling.onlineshop.Utilities.getTokenCookieValue;
 
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.training.upskilling.onlineshop.security.service.SecurityService;
+import org.training.upskilling.onlineshop.service.SecurityService;
 
 @Component("sessionLifeTimeFilter")
 @Order(2)

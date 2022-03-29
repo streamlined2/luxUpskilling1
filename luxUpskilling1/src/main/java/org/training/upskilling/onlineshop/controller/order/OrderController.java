@@ -1,4 +1,4 @@
-package org.training.upskilling.onlineshop.controller.product;
+package org.training.upskilling.onlineshop.controller.order;
 
 import static org.training.upskilling.onlineshop.Utilities.getTokenCookieValue;
 import java.util.Optional;
@@ -10,8 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.training.upskilling.onlineshop.security.service.SecurityService;
 import org.training.upskilling.onlineshop.service.OrderService;
+import org.training.upskilling.onlineshop.service.SecurityService;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
 
 import lombok.RequiredArgsConstructor;

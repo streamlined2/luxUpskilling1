@@ -1,4 +1,4 @@
-package org.training.upskilling.onlineshop.security.service;
+package org.training.upskilling.onlineshop.service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -66,7 +66,7 @@ public class DefaultSecurityService implements SecurityService {
 			return false;
 		}
 		Role role = Role.getRole(session.get().getUser().getRole());
-		return isRoleMatchesProtectedResource(role, context, resource);
+		return roleMatchesProtectedResource(role, context, resource);
 	}
 
 	private Optional<Session> getSession(Token token) {
@@ -81,7 +81,7 @@ public class DefaultSecurityService implements SecurityService {
 		return session.getExpirationTime().isAfter(LocalDateTime.now());
 	}
 
-	private boolean isRoleMatchesProtectedResource(Role role, String context, String resource) {
+	private boolean roleMatchesProtectedResource(Role role, String context, String resource) {
 		return PROTECTED_RESOURCES.entrySet().stream().anyMatch(entry -> entry.getValue().equals(role)
 				&& resource.regionMatches(context.length(), entry.getKey(), 0, entry.getKey().length()));
 	}

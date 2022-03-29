@@ -1,4 +1,4 @@
-package org.training.upskilling.onlineshop.controller.product;
+package org.training.upskilling.onlineshop.controller.security;
 
 import static org.training.upskilling.onlineshop.Utilities.getTokenCookieValue;
 
@@ -12,8 +12,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.training.upskilling.onlineshop.security.service.SecurityService;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.training.upskilling.onlineshop.service.OrderService;
+import org.training.upskilling.onlineshop.service.SecurityService;
 import org.training.upskilling.onlineshop.service.UserService;
 import org.training.upskilling.onlineshop.service.dto.UserDto;
 
@@ -44,18 +46,18 @@ public class AuthenticationController {
 	}
 
 	@PostMapping(LOGIN_ENDPOINT)
-	public String login(HttpServletRequest req, HttpServletResponse resp, HttpSession session) {
-		String url = (String) session.getAttribute(TARGET_URL_ATTRIBUTE);
-		String userName = req.getParameter(USER_NAME_PARAMETER);
-		String password = req.getParameter(PASSWORD_PARAMETER);
-		if (url != null && userName != null && password != null) {
+	public String login(@RequestParam(name = USER_NAME_PARAMETER, required = false) String userName,
+			@RequestParam(name = PASSWORD_PARAMETER, required = false) String password,
+			@SessionAttribute(name = TARGET_URL_ATTRIBUTE, required = false) String targetUrl, HttpServletRequest req,
+			HttpServletResponse resp, HttpSession session) {
+		if (targetUrl != null && userName != null && password != null) {
 			Optional<UserDto> user = userService.findUserByName(userName);
-			if (securityService.isValidUser(user, password)) {
+			if (user.isPresent() && securityService.isValidUser(user, password)) {
 				UserDto userDto = user.get();
 				setNewToken(resp, userDto);
 				session.setAttribute(USER_ROLE_ATTRIBUTE, securityService.getUserRoleName(userDto));
 				orderService.createOrder(userDto);
-				return "redirect:" + url;
+				return "redirect:" + targetUrl;
 			}
 		}
 		return "redirect:" + HOME_URL;

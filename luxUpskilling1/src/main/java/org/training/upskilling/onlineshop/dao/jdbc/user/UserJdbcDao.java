@@ -6,10 +6,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.springframework.stereotype.Repository;
 import org.training.upskilling.onlineshop.dao.DataAccessException;
 import org.training.upskilling.onlineshop.dao.UserDao;
-import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.model.User;
 
 import lombok.RequiredArgsConstructor;
@@ -26,12 +27,12 @@ public class UserJdbcDao implements UserDao {
 	private static final String FETCH_ENTITY_BY_NAME_STATEMENT = String
 			.format("SELECT id, name, password, salt, role FROM %s.%s WHERE name=?", SCHEMA, TABLE_NAME);
 
-	private final JdbcConnectionFactory connectionFactory;
+	private final DataSource dataSource;
 	private final UserJdbcHelper userJdbcHelper;
 
 	@Override
 	public Optional<User> findByName(String name) {
-		try (Connection conn = connectionFactory.getConnection();
+		try (Connection conn = dataSource.getConnection();
 				PreparedStatement statement = conn.prepareStatement(FETCH_ENTITY_BY_NAME_STATEMENT)) {
 			statement.setString(1, name);
 			try (ResultSet resultSet = statement.executeQuery()) {

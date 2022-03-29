@@ -1,4 +1,4 @@
-package org.training.upskilling.onlineshop.security.service;
+package org.training.upskilling.onlineshop.service;
 
 import java.util.Optional;
 

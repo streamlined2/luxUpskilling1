@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.sql.DataSource;
+
 import org.springframework.stereotype.Repository;
 import org.training.upskilling.onlineshop.dao.Dao;
 import org.training.upskilling.onlineshop.dao.DataAccessException;
-import org.training.upskilling.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import org.training.upskilling.onlineshop.model.Product;
 
 import lombok.RequiredArgsConstructor;
@@ -37,12 +38,12 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 	private static final String UPDATE_ENTITY_STATEMENT = String.format("UPDATE %s.%s SET name=?,price=? WHERE id=?",
 			SCHEMA, TABLE_NAME);
 
-	private final JdbcConnectionFactory connectionFactory;
+	private final DataSource dataSource;
 	private final ProductJdbcHelper productJdbcHelper;
 
 	@Override
 	public List<Product> getAll() {
-		try (Connection conn = connectionFactory.getConnection();
+		try (Connection conn = dataSource.getConnection();
 				Statement statement = conn.createStatement();
 				ResultSet resultSet = statement.executeQuery(FETCH_ALL_STATEMENT)) {
 			List<Product> products = new ArrayList<>();
@@ -58,7 +59,7 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 
 	@Override
 	public Optional<Product> findById(Long id) {
-		try (Connection conn = connectionFactory.getConnection();
+		try (Connection conn = dataSource.getConnection();
 				PreparedStatement statement = conn.prepareStatement(FETCH_ENTITY_STATEMENT)) {
 			statement.setLong(1, id);
 			try (ResultSet resultSet = statement.executeQuery()) {
@@ -75,7 +76,7 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 
 	@Override
 	public void add(Product entity) {
-		try (Connection conn = connectionFactory.getConnection()) {
+		try (Connection conn = dataSource.getConnection()) {
 			conn.setAutoCommit(false);
 			try (PreparedStatement statement = conn.prepareStatement(INSERT_ENTITY_STATEMENT,
 					Statement.RETURN_GENERATED_KEYS)) {
@@ -99,7 +100,7 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 
 	@Override
 	public void update(Product entity) {
-		try (Connection conn = connectionFactory.getConnection();
+		try (Connection conn = dataSource.getConnection();
 				PreparedStatement statement = conn.prepareStatement(UPDATE_ENTITY_STATEMENT)) {
 			productJdbcHelper.fillInUpdateParameters(statement, entity);
 			if (statement.executeUpdate() == 1) {
@@ -114,7 +115,7 @@ public class ProductJdbcDao implements Dao<Product, Long> {
 
 	@Override
 	public void delete(Long id) {
-		try (Connection conn = connectionFactory.getConnection();
+		try (Connection conn = dataSource.getConnection();
 				PreparedStatement statement = conn.prepareStatement(DELETE_ENTITY_STATEMENT)) {
 			statement.setLong(1, id);
 			if (statement.executeUpdate() == 1) {

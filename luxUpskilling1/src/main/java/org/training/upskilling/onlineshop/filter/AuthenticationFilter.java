@@ -1,10 +1,10 @@
-package org.training.upskilling.onlineshop.controller.security;
+package org.training.upskilling.onlineshop.filter;
 
 import static org.training.upskilling.onlineshop.Utilities.getRequestURL;
 import static org.training.upskilling.onlineshop.Utilities.getTokenCookieValue;
-import static org.training.upskilling.onlineshop.controller.product.AuthenticationController.LOGIN_ENDPOINT;
-import static org.training.upskilling.onlineshop.controller.product.AuthenticationController.LOGIN_FORM_ENDPOINT;
-import static org.training.upskilling.onlineshop.controller.product.AuthenticationController.LOGOUT_ENDPOINT;
+import static org.training.upskilling.onlineshop.controller.security.AuthenticationController.LOGIN_ENDPOINT;
+import static org.training.upskilling.onlineshop.controller.security.AuthenticationController.LOGIN_FORM_ENDPOINT;
+import static org.training.upskilling.onlineshop.controller.security.AuthenticationController.LOGOUT_ENDPOINT;
 
 import java.io.IOException;
 import java.util.Set;
@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.training.upskilling.onlineshop.controller.product.AuthenticationController;
-import org.training.upskilling.onlineshop.security.service.SecurityService;
+import org.training.upskilling.onlineshop.controller.security.AuthenticationController;
+import org.training.upskilling.onlineshop.service.SecurityService;
 
 @Component("authenticationFilter")
 @Order(1)

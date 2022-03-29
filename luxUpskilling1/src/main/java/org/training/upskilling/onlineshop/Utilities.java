@@ -6,7 +6,7 @@ import java.util.Optional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.training.upskilling.onlineshop.controller.product.AuthenticationController;
+import org.training.upskilling.onlineshop.controller.security.AuthenticationController;
 
 import lombok.experimental.UtilityClass;
 
